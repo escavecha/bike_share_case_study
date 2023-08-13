@@ -2,7 +2,7 @@
 title: "Case Study: How Does a Bike-Share Navigate Speedy Success?"
 author: John Lee
 date: < the current date DD/MM/YYYY >
-output: html_notebook
+output: html_vignette
 ---
 This work is an output of the capstone project for Google Data Analytics Professional Certificate.
 (https://www.coursera.org/professional-certificates/google-data-analytics) This fictional case study packet is based on the Divvy case study, "'Sophisticated, Clear, and Polished’: Divvy and Data Visualization" written by Kevin Hartman. (https://artscience.blog/home/divvy-dataviz-case-study)
@@ -73,11 +73,29 @@ Except `Trips_2019_Q2`, column names in other dataframes are identical as below:
  [6] "from_station_id"   "from_station_name" "to_station_id"     "to_station_name"   "usertype"
 [11] "gender"            "birthyear"
 
-While `Trips_2019_Q2` shows different column names, but the attributes are same.
+While `Trips_2019_Q2` shows different column names, but the attributes look same.
  [1] "01 - Rental Details Rental ID"                    "01 - Rental Details Local Start Time"
  [3] "01 - Rental Details Local End Time"               "01 - Rental Details Bike ID"
  [5] "01 - Rental Details Duration In Seconds Uncapped" "03 - Rental Start Station ID"
  [7] "03 - Rental Start Station Name"                   "02 - Rental End Station ID"
  [9] "02 - Rental End Station Name"                     "User Type"
 [11] "Member Gender"                                    "05 - Member Details Member Birthday Year"
+
+Rename the column names to match to the others.
+```{r}
+Trips_2019_Q2 <- rename(Trips_2019_Q2,
+                        trip_id = "01 - Rental Details Rental ID",
+                        start_time = "01 - Rental Details Local Start Time",
+                        end_time = "01 - Rental Details Local End Time",
+                        bikeid = "01 - Rental Details Bike ID",
+                        tripduration = "01 - Rental Details Duration In Seconds Uncapped",
+                        from_station_id = "03 - Rental Start Station ID",
+                        from_station_name = "03 - Rental Start Station Name",
+                        to_station_id = "02 - Rental End Station ID",
+                        to_station_name = "02 - Rental End Station Name",
+                        usertype= "User Type",
+                        gender = "Member Gender",
+                        birthyear = "05 - Member Details Member Birthday Year"
+                        )
+```
 
