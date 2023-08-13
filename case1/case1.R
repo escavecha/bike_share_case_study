@@ -1,4 +1,5 @@
 # work prepared for Google Data Analytics Certificate - Capstone Project
+
 # load required libraries
 library(tidyverse)
 library(lubridate)
