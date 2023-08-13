@@ -9,35 +9,75 @@ This work is an output of the capstone project for Google Data Analytics Profess
 Below describes how the bike-sharing user patterns differ in given data set, and provides findings and suggestions based on the result of the analysis.
 
 Scenario:
-You are a junior data analyst working in the marketing analyst team at "Cyclistic," a bike-share company in Chicago. The director of marketing believes the company’s future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently. From these insights, your team will design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your recommendations, so they must be backed up with compelling data insights and professional data visualizations.
+You are a junior data analyst working in the marketing analyst team at **Cyclistic**, a bike-share company in Chicago. The marketing director believes the company’s future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently.
+From these insights, your team will design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your recommendations, so they must be backed up with compelling data insights and professional data visualizations.
 
-In 2016, Cyclistic launched a successful bike-share offering. Since then, the program has grown to a fleet of 5,824 bicycles that are geotracked and locked into a network of 692 stations across Chicago. The bikes can be unlocked from one station and returned to any other station in the system anytime.
-Until now, Cyclistic’s marketing strategy relied on building general awareness and appealing to broad consumer segments. One approach that helped make these things possible was the flexibility of its pricing plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase single-ride or full-day passes are referred to as casual riders. Customers who purchase annual memberships are Cyclistic members.
+In 2016, Cyclistic launched a bike-share offering. Since then, the program has grown to a fleet of 5,824 bicycles that are geo-tracked and locked into a network of 692 stations across Chicago.
+The bikes can be unlocked from one station and returned to any other station in the system anytime.
+Until now, Cyclistic’s marketing strategy relied on building general awareness and appealing to broad consumer segments. One approach that helped make these things possible was the flexibility of its pricing plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase single-ride or full-day passes are referred to as **casual riders (casual)**. Customers who purchase annual memberships are **Cyclistic members (member)**.
 
+Cyclistic’s finance analysts have concluded that annual members are much more profitable than casual riders. Although the pricing flexibility helps Cyclistic attract more customers, marketing director believes that maximizing the number of annual members will be key to future growth.
+Rather than creating a marketing campaign that targets all-new customers, she believes there is a very good chance to convert casual riders into members. She notes that casual riders are already aware of the Cyclistic program and have chosen Cyclistic for their mobility needs.
 
-
-Cyclistic’s finance analysts have concluded that annual members are much more profitable than casual riders. Although the pricing flexibility helps Cyclistic attract more customers, Moreno believes that maximizing the number of annual members will be key to future growth. Rather than creating a marketing campaign that targets all-new customers, Moreno believes there is a very good chance to convert casual riders into members. She notes that casual riders are already aware of the Cyclistic program and have chosen Cyclistic for their mobility needs.
-The marketing director set a clear goal: Design marketing strategies aimed at converting casual riders into annual members. In order to do that, however, the marketing analyst team needs to better understand how annual members and casual riders differ, why casual riders would buy a membership, and how digital media could affect their marketing tactics. Moreno and her team are interested in analyzing the Cyclistic historical bike trip data to identify trends. You have assigned to the first question to the answer: How do annual members and casual riders use Cyclistic bikes differently?
+The marketing director set a clear goal: Design marketing strategies aimed at converting casual riders into annual members. In order to do that, however, the marketing analyst team needs to better understand how annual members and casual riders differ, why casual riders would buy a membership, and how digital media could affect their marketing tactics. She and her team are interested in analyzing the Cyclistic historical bike trip data to identify trends. You have assigned to the first question to the answer: How do annual members and casual riders use Cyclistic bikes differently?
 
 Statement of Purpose:
-Use the given data set for 12-month period, analyze different patterns and present findings and suggestions along with the result of analysis.
+Use the given data set for 12-month period, analyze different patterns and present findings and suggestions along with the result of analysis. R has used for this work.
 
+Data source:
+Cyclistic's historical trip data from 2013 has provided for analysis: https://divvy-tripdata.s3.amazonaws.com/index.html
+Note: The datasets have a different name because Cyclistic is a fictional company.
+The data has been made available or case study by Motivate International Inc. under the license (https://ride.divvybikes.com/data-license-agreement)
+In this study, I have downloaded quarterly data in 2019. Each file is provided with ZIP format. each file contains a csv file.
 
+Data pre-processing
+this work is following in below steps
+1. import libraries for use.
+2. import data from downloaded files.
+3. check variable names, attributes in datasets to merge them into a single dataframe.
+4. clean up and add data to prepare analysis.
 
+Step 1. Install and import libraries for use.
+```{r}
+install.packages("tidyverse")
+install.packages("lubricate")
+install.packages("ggplot2")
+install.packages("readr")
+install.packages("dplyr")
+install.packages("gridExtra")
+```
+```{r}
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(readr)
+library(dplyr)
 library(gridExtra)
-```{r}
-
 ```
-The code chunk appears:
+Step 2. import data from downloaded files.
 ```{r}
-print("hello")
+Trips_2019_Q1 <- read_csv("Divvy_Trips_2019_Q1.csv")
+Trips_2019_Q2 <- read_csv("Divvy_Trips_2019_Q2.csv")
+Trips_2019_Q3 <- read_csv("Divvy_Trips_2019_Q3.csv")
+Trips_2019_Q4 <- read_csv("Divvy_Trips_2019_Q4.csv")
 ```
-
-Type any R code in the chunk, for example:
+Step 3. check for column names to quick review. To merge data frames into one, column names and attributes should consistent each other.
 ```{r}
-mycars <- within(mtcars, { cyl <- ordered(cyl) })
-mycars
+colnames(Trips_2019_Q1)
+colnames(Trips_2019_Q2)
+colnames(Trips_2019_Q3)
+colnames(Trips_2019_Q4)
 ```
+Except `Trips_2019_Q2`, column names in other dataframes are identical as below:
+ [1] "trip_id"           "start_time"        "end_time"          "bikeid"            "tripduration"
+ [6] "from_station_id"   "from_station_name" "to_station_id"     "to_station_name"   "usertype"
+[11] "gender"            "birthyear"
 
-Now, click the **Run** button on the chunk toolbar to [execute](https://www.jetbrains.com/help/pycharm/r-markdown.html#run-r-code) the chunk code. The result should be placed under the chunk.
-Click the **Knit and Open Document** to build and preview an output.
+While `Trips_2019_Q2` shows different column names, but the attributes are same.
+ [1] "01 - Rental Details Rental ID"                    "01 - Rental Details Local Start Time"
+ [3] "01 - Rental Details Local End Time"               "01 - Rental Details Bike ID"
+ [5] "01 - Rental Details Duration In Seconds Uncapped" "03 - Rental Start Station ID"
+ [7] "03 - Rental Start Station Name"                   "02 - Rental End Station ID"
+ [9] "02 - Rental End Station Name"                     "User Type"
+[11] "Member Gender"                                    "05 - Member Details Member Birthday Year"
+
