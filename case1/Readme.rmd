@@ -98,4 +98,16 @@ Trips_2019_Q2 <- rename(Trips_2019_Q2,
                         birthyear = "05 - Member Details Member Birthday Year"
                         )
 ```
+Inspect the data types for each column. If all matches, then the identical will return 'true'.
+```{r}
+df1_types <- sapply(Trips_2019_Q1, class)
+df2_types <- sapply(Trips_2019_Q2, class)
+df3_types <- sapply(Trips_2019_Q3, class)
+df4_types <- sapply(Trips_2019_Q4, class)
+identical(df1_types, df2_types)
+identical(df1_types, df3_types)
+identical(df1_types, df4_types)
+```
+
+
 
