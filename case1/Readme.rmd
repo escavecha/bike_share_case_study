@@ -35,7 +35,7 @@ this work is following in below steps
 1. import libraries for use.
 2. import data from downloaded files.
 3. check variable names, attributes in datasets to merge them into a single dataframe.
-4. clean up and add data to prepare analysis.
+4. clean up data to prepare analysis.
 
 Step 1. Install and import libraries for use.
 ```{r}
@@ -61,6 +61,12 @@ Trips_2019_Q2 <- read_csv("Divvy_Trips_2019_Q2.csv")
 Trips_2019_Q3 <- read_csv("Divvy_Trips_2019_Q3.csv")
 Trips_2019_Q4 <- read_csv("Divvy_Trips_2019_Q4.csv")
 ```
+Quick check for imported dataframe sizes.
+- Trips_2019_Q1: 365,069 rows x 12 columns
+- Trips_2019_Q2: 1,108,163 rows x 12 columns
+- Trips_2019_Q3: 1,640,718 rows x 12 columns
+- Trips_2019_Q4: 704,054 rows x 12 columns
+
 Step 3. check for column names to quick review. To merge data frames into one, column names and attributes should consistent each other.
 ```{r}
 colnames(Trips_2019_Q1)
@@ -108,6 +114,54 @@ identical(df1_types, df2_types)
 identical(df1_types, df3_types)
 identical(df1_types, df4_types)
 ```
+Combine all quarterly data into single dataframe to show annual data.
+
+```{r}
+Trips_2019v0 <- bind_rows(Trips_2019_Q1, Trips_2019_Q2, Trips_2019_Q3, Trips_2019_Q4)
+```
+Keep this original dataframe for backup. Its size is 3,818,004 rows by 12 columns.
+
+Step 4. Clean up data to prepare analysis.
+Drop irrelevant columns ("gender", "birthyear") then save to new data frame
+```{r}
+Trips_2019v1 <- Trips_2019v0 %>% select(-c(gender, birthyear))
+```
+Add a new column to show trip duration time in minutes.
+```{r}
+Trips_2019v1$duration_min <- as.numeric(difftime(Trips_2019v1$end_time, Trips_2019v1$start_time, units = "mins"))
+
+```
+According to the values in a new column 'duration_min', Current 'tripduration' column indicates values in seconds. To avoid confusion, change the column name accordingly.
+```{r}
+names(Trips_2019v1)[names(Trips_2019v1) == 'tripduration'] <- "duration_sec"
+
+```
+Check the dataframe Trip_2019v1 using summary() function. the Minimum value in duration_min is -56.37. Since this column has calculated based on the time difference between `end_time` and `start_time`, negative value seems strange. The packet explains that those values are from the bikes are taken out of services. So I will delete those rows from the data.
+```{r}
+Trips_2019v1 <- subset(Trips_2019v1, duration_min >= 0)
+```
+Now updated dataframe has 3,817,991 rows, or 13 rows are removed - It won't affect much for the analysis.
+
+(Optional) If your OS language is not set to English, then it would be better to set them to English when extracting dates.
+```{r}
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+```
+Extract data and time information from `start_time` and `end_time`.
+I want to get the year, month, start/end date, and weekday information.
+```{r}
+Trips_2019v1$year <- as.numeric(format(Trips_2019v1$start_time, "%Y"))
+#Trips_2019v1$month <- as.numeric(format(Trips_2019v1$start_time, "%m"))
+Trips_2019v1$month <- format(Trips_2019v1$start_time, "%b")
+Trips_2019v1$days <- weekdays(Trips_2019v1$start_time)
+Trips_2019v1$start_date <- as.numeric(format(Trips_2019v1$start_time, "%d"))
+Trips_2019v1$end_date <- as.numeric(format(Trips_2019v1$end_time, "%d"))
+```
+And convert current start/end times to show time data only.
+```{r}
+Trips_2019v1$start_time <- format(Trips_2019v1$start_time, "%H:%M:%S")
+Trips_2019v1$end_time <- format(Trips_2019v1$end_time, "%H:%M:%S")
+```
+
 
 
 

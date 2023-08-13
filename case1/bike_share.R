@@ -1,4 +1,4 @@
-# work prepared for Google Data Analytics Certificate - Capstone Project
+# For Google Data Analytics Professional Certificate - Capstone Project
 
 # load required libraries
 library(tidyverse)
@@ -9,10 +9,10 @@ library(dplyr)
 library(gridExtra)
 
 # import csv data files
-Trips_2019_Q1 <- read_csv("C:/Google_DA_CaseStudy/case1/Divvy_Trips_2019_Q1.csv")
-Trips_2019_Q2 <- read_csv("C:/Google_DA_CaseStudy/case1/Divvy_Trips_2019_Q2.csv")
-Trips_2019_Q3 <- read_csv("C:/Google_DA_CaseStudy/case1/Divvy_Trips_2019_Q3.csv")
-Trips_2019_Q4 <- read_csv("C:/Google_DA_CaseStudy/case1/Divvy_Trips_2019_Q4.csv")
+Trips_2019_Q1 <- read_csv("Divvy_Trips_2019_Q1.csv")
+Trips_2019_Q2 <- read_csv("Divvy_Trips_2019_Q2.csv")
+Trips_2019_Q3 <- read_csv("Divvy_Trips_2019_Q3.csv")
+Trips_2019_Q4 <- read_csv("Divvy_Trips_2019_Q4.csv")
 
 
 # check for column names to quick review
@@ -65,10 +65,6 @@ Trips_2019v1$duration_min <- as.numeric(difftime(Trips_2019v1$end_time, Trips_20
 names(Trips_2019v1)[names(Trips_2019v1) == 'tripduration'] <- "duration_sec"
 
 
-# move the 'duration_min' to the 4th column next to 'duration_sec'
-Trips_2019v1 <- Trips_2019v1[, c(1:3, ncol(Trips_2019v1), 4:(ncol(Trips_2019v1)-1))]
-
-
 # remove the records where bikes are not actually used (time duration is less than zero)
 Trips_2019v1 <- subset(Trips_2019v1, duration_min >= 0)
 
@@ -76,17 +72,20 @@ Trips_2019v1 <- subset(Trips_2019v1, duration_min >= 0)
 # make sure that you set the locale to English if your language setting is not in English
 # convert the date to the weekdays, in string
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
-Trips_2019v1$days <- weekdays(Trips_2019v1$start_time)
 
 # Extract year, month, start/end date, start/end time
-Trips_2019v1$days <- weekdays(Trips_2019v1$start_time)
 Trips_2019v1$year <- as.numeric(format(Trips_2019v1$start_time, "%Y"))
-Trips_2019v1$month <- as.numeric(format(Trips_2019v1$start_time, "%m"))
+#Trips_2019v1$month <- as.numeric(format(Trips_2019v1$start_time, "%m"))
+Trips_2019v1$month <- format(Trips_2019v1$start_time, "%b")
+Trips_2019v1$days <- weekdays(Trips_2019v1$start_time)
 Trips_2019v1$start_date <- as.numeric(format(Trips_2019v1$start_time, "%d"))
 Trips_2019v1$end_date <- as.numeric(format(Trips_2019v1$end_time, "%d"))
 # convert current start/end times to show time data only
 Trips_2019v1$start_time <- format(Trips_2019v1$start_time, "%H:%M:%S")
 Trips_2019v1$end_time <- format(Trips_2019v1$end_time, "%H:%M:%S")
+
+# convert float values to int values
+
 
 # remove redundant data columns, then save to new dataframe
 Trips_2019v2 <- Trips_2019v1 %>% select(-c(from_station_name, to_station_name))
