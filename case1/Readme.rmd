@@ -4,13 +4,25 @@ author: John Lee
 date: < the current date DD/MM/YYYY >
 output: html_notebook
 ---
-This work is an output of the capstone project for Google Data Analytics Certificate.
+This work is an output of the capstone project for Google Data Analytics Professional Certificate.
+(https://www.coursera.org/professional-certificates/google-data-analytics) This fictional case study packet is based on the Divvy case study, "'Sophisticated, Clear, and Polished’: Divvy and Data Visualization" written by Kevin Hartman. (https://artscience.blog/home/divvy-dataviz-case-study)
 Below describes how the bike-sharing user patterns differ in given data set, and provides findings and suggestions based on the result of the analysis.
 
-The [R plugin](https://www.jetbrains.com/help/pycharm/r-plugin-support.html) for IntelliJ-based IDEs provides
-handy capabilities to work with the [R Markdown](https://www.jetbrains.com/help/pycharm/r-markdown.html) files.
-To [add](https://www.jetbrains.com/help/pycharm/r-markdown.html#add-code-chunk) a new R chunk,
-position the caret at any line or the code chunk, then click "+".
+Scenario:
+You are a junior data analyst working in the marketing analyst team at "Cyclistic," a bike-share company in Chicago. The director of marketing believes the company’s future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently. From these insights, your team will design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your recommendations, so they must be backed up with compelling data insights and professional data visualizations.
+
+In 2016, Cyclistic launched a successful bike-share offering. Since then, the program has grown to a fleet of 5,824 bicycles that are geotracked and locked into a network of 692 stations across Chicago. The bikes can be unlocked from one station and returned to any other station in the system anytime.
+Until now, Cyclistic’s marketing strategy relied on building general awareness and appealing to broad consumer segments. One approach that helped make these things possible was the flexibility of its pricing plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase single-ride or full-day passes are referred to as casual riders. Customers who purchase annual memberships are Cyclistic members.
+
+
+
+Cyclistic’s finance analysts have concluded that annual members are much more profitable than casual riders. Although the pricing flexibility helps Cyclistic attract more customers, Moreno believes that maximizing the number of annual members will be key to future growth. Rather than creating a marketing campaign that targets all-new customers, Moreno believes there is a very good chance to convert casual riders into members. She notes that casual riders are already aware of the Cyclistic program and have chosen Cyclistic for their mobility needs.
+The marketing director set a clear goal: Design marketing strategies aimed at converting casual riders into annual members. In order to do that, however, the marketing analyst team needs to better understand how annual members and casual riders differ, why casual riders would buy a membership, and how digital media could affect their marketing tactics. Moreno and her team are interested in analyzing the Cyclistic historical bike trip data to identify trends. You have assigned to the first question to the answer: How do annual members and casual riders use Cyclistic bikes differently?
+
+Statement of Purpose:
+Use the given data set for 12-month period, analyze different patterns and present findings and suggestions along with the result of analysis.
+
+
 
 library(gridExtra)
 ```{r}
