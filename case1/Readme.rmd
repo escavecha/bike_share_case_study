@@ -1,15 +1,24 @@
 ---
-title: "R Notebook"
+title: "Case Study: How Does a Bike-Share Navigate Speedy Success?"
+author: John Lee
+date: < the current date DD/MM/YYYY >
 output: html_notebook
 ---
+This work is an output of the capstone project for Google Data Analytics Certificate.
+Below describes how the bike-sharing user patterns differ in given data set, and provides findings and suggestions based on the result of the analysis.
 
 The [R plugin](https://www.jetbrains.com/help/pycharm/r-plugin-support.html) for IntelliJ-based IDEs provides
 handy capabilities to work with the [R Markdown](https://www.jetbrains.com/help/pycharm/r-markdown.html) files.
 To [add](https://www.jetbrains.com/help/pycharm/r-markdown.html#add-code-chunk) a new R chunk,
 position the caret at any line or the code chunk, then click "+".
 
+library(gridExtra)
+```{r}
+
+```
 The code chunk appears:
 ```{r}
+print("hello")
 ```
 
 Type any R code in the chunk, for example:

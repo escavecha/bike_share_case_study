@@ -197,7 +197,7 @@ Monday_data <- Trips_2019v2 %>%
   arrange(usertype, hour)
 
 # Create the first plot
-p1 <- Monday_data %>%
+p1_Mon <- Monday_data %>%
   ggplot(aes(x = hour, 
              y = average_duration,
              color = usertype,
@@ -207,7 +207,7 @@ p1 <- Monday_data %>%
        title = 'Average duration by user type and hour on Monday') 
 
 # Create the second plot
-p2 <- Monday_data %>%
+p2_Mon <- Monday_data %>%
   ggplot(aes(x = hour, 
              y = number_of_rides,
              color = usertype,
@@ -217,7 +217,7 @@ p2 <- Monday_data %>%
        title = 'Number of rides by user type and hour on Monday') 
 
 # Display the plots
-grid.arrange(p1, p2, ncol=1)
+grid.arrange(p1_Mon, p2_Mon, ncol=1)
 
 Sunday_data <- Trips_2019v2 %>% 
   filter(days == "Sunday") %>%
@@ -228,7 +228,7 @@ Sunday_data <- Trips_2019v2 %>%
   arrange(usertype, hour)
 
 # Create the first plot
-p1 <- Sunday_data %>%
+p1_Sun <- Sunday_data %>%
   ggplot(aes(x = hour, 
              y = average_duration,
              color = usertype,
@@ -238,7 +238,7 @@ p1 <- Sunday_data %>%
        title = 'Average duration by user type and hour on Sunday') 
 
 # Create the second plot
-p2 <- Sunday_data %>%
+p2_Sun <- Sunday_data %>%
   ggplot(aes(x = hour, 
              y = number_of_rides,
              color = usertype,
@@ -248,4 +248,4 @@ p2 <- Sunday_data %>%
        title = 'Number of rides by user type and hour on Sunday') 
 
 # Display the plots
-grid.arrange(p1, p2, ncol=1)
+grid.arrange(p1_Sun, p2_Sun, ncol=1)
