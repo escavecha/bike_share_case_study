@@ -324,3 +324,192 @@ p5b_tue <- tuesday_data %>%
 # Display the plots
 p5 <- grid.arrange(p5a_tue, p5b_tue, ncol=1)
 ggsave("p5_tuesday_hour.png", p5)
+
+
+# create the plot for use pattern of Wednesday
+wednesday_data <- Trips_2019v2 %>%
+  filter(days == "Wednesday") %>%
+  mutate(hour = hour(hms(start_time))) %>%
+  group_by(usertype, hour) %>%
+  summarise(number_of_rides = n(),
+            average_duration = mean(duration_min)) %>%
+  arrange(usertype, hour)
+
+# Create the first plot
+p6a_wed <- wednesday_data %>%
+  ggplot(aes(x = hour,
+             y = average_duration,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  labs(x = 'Hour', y = 'Average duration (min)',
+       title = 'Average duration by user type and hour on Wednesday')
+
+# Create the second plot
+p6b_wed <- wednesday_data %>%
+  ggplot(aes(x = hour,
+             y = number_of_rides,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  labs(x = 'Hour', y = 'Number of rides',
+       title = 'Number of rides by user type and hour on Wednesday')
+
+# Display the plots
+p6 <- grid.arrange(p6a_wed, p6b_wed, ncol=1)
+ggsave("p6_wednesday_hour.png", p6)
+
+
+# create the plot for use pattern of Thursday
+thursday_data <- Trips_2019v2 %>%
+  filter(days == "Thursday") %>%
+  mutate(hour = hour(hms(start_time))) %>%
+  group_by(usertype, hour) %>%
+  summarise(number_of_rides = n(),
+            average_duration = mean(duration_min)) %>%
+  arrange(usertype, hour)
+
+# Create the first plot
+p7a_thur <- thursday_data %>%
+  ggplot(aes(x = hour,
+             y = average_duration,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  labs(x = 'Hour', y = 'Average duration (min)',
+       title = 'Average duration by user type and hour on Thursday')
+
+# Create the second plot
+p7b_thur <- thursday_data %>%
+  ggplot(aes(x = hour,
+             y = number_of_rides,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  labs(x = 'Hour', y = 'Number of rides',
+       title = 'Number of rides by user type and hour on Thursday')
+
+# Display the plots
+p7 <- grid.arrange(p7a_thur, p7b_thur, ncol=1)
+ggsave("p7_thursday_hour.png", p7)
+
+
+# create the plot for use pattern of Friday
+friday_data <- Trips_2019v2 %>%
+  filter(days == "Friday") %>%
+  mutate(hour = hour(hms(start_time))) %>%
+  group_by(usertype, hour) %>%
+  summarise(number_of_rides = n(),
+            average_duration = mean(duration_min)) %>%
+  arrange(usertype, hour)
+
+# Create the first plot
+p8a_fri <- friday_data %>%
+  ggplot(aes(x = hour,
+             y = average_duration,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  labs(x = 'Hour', y = 'Average duration (min)',
+       title = 'Average duration by user type and hour on Friday')
+
+# Create the second plot
+p8b_fri <- friday_data %>%
+  ggplot(aes(x = hour,
+             y = number_of_rides,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  labs(x = 'Hour', y = 'Number of rides',
+       title = 'Number of rides by user type and hour on Friday')
+
+# Display the plots
+p8 <- grid.arrange(p8a_fri, p8b_fri, ncol=1)
+ggsave("p8_friday_hour.png", p8)
+
+
+# create the plot for use pattern of Saturday
+saturday_data <- Trips_2019v2 %>%
+  filter(days == "Saturday") %>%
+  mutate(hour = hour(hms(start_time))) %>%
+  group_by(usertype, hour) %>%
+  summarise(number_of_rides = n(),
+            average_duration = mean(duration_min)) %>%
+  arrange(usertype, hour)
+
+# Create the first plot
+p9a_sat <- saturday_data %>%
+  ggplot(aes(x = hour,
+             y = average_duration,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  labs(x = 'Hour', y = 'Average duration (min)',
+       title = 'Average duration by user type and hour on Saturday')
+
+# Create the second plot
+p9b_sat <- friday_data %>%
+  ggplot(aes(x = hour,
+             y = number_of_rides,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  labs(x = 'Hour', y = 'Number of rides',
+       title = 'Number of rides by user type and hour on Saturday')
+
+# Display the plots
+p9 <- grid.arrange(p9a_sat, p9b_sat, ncol=1)
+ggsave("p9_saturday_hour.png", p9)
+
+
+# create the plot for use pattern of Sunday
+sunday_data <- Trips_2019v2 %>%
+  filter(days == "Sunday") %>%
+  mutate(hour = hour(hms(start_time))) %>%
+  group_by(usertype, hour) %>%
+  summarise(number_of_rides = n(),
+            average_duration = mean(duration_min)) %>%
+  arrange(usertype, hour)
+
+# Create the first plot
+p10a_sun <- sunday_data %>%
+  ggplot(aes(x = hour,
+             y = average_duration,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  labs(x = 'Hour', y = 'Average duration (min)',
+       title = 'Average duration by user type and hour on Sunday')
+
+# Create the second plot
+p10b_sun <- friday_data %>%
+  ggplot(aes(x = hour,
+             y = number_of_rides,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  labs(x = 'Hour', y = 'Number of rides',
+       title = 'Number of rides by user type and hour on Sunday')
+
+# Display the plots
+p10 <- grid.arrange(p10a_sun, p10b_sun, ncol=1)
+ggsave("p10_sunday_hour.png", p10)
+
+# TODO weekdays hourly
+# TODO weekends hourly
+
+install.packages("tidygeocoder") # TODO check
+library(tidygeocoder)
+install.packages("leaflet")
+library(leaflet)
+
+# Geocode the street addresses
+df <- data.frame(address = c("Eiffel Tower, Paris, France", "Arc de Triomphe, Paris, France"),
+                 usertype = c("Subscriber", "Customer"))
+df_geo <- geocode(df, address = address)
+
+# Plot the points on a map
+m <- leaflet() %>% addTiles() %>% addCircleMarkers(data = df_geo,
+                   lat = ~lat,
+                   lng = ~lon, color = "red")
+m
