@@ -14,7 +14,7 @@ From these insights, your team will design a new marketing strategy to convert c
 
 In 2016, Cyclistic launched a bike-share offering. Since then, the program has grown to a fleet of 5,824 bicycles that are geo-tracked and locked into a network of 692 stations across Chicago.
 The bikes can be unlocked from one station and returned to any other station in the system anytime.
-Until now, Cyclistic’s marketing strategy relied on building general awareness and appealing to broad consumer segments. One approach that helped make these things possible was the flexibility of its pricing plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase single-ride or full-day passes are referred to as **casual riders (casual)**. Customers who purchase annual memberships are **Cyclistic members (member)**.
+Until now, Cyclistic’s marketing strategy relied on building general awareness and appealing to broad consumer segments. One approach that helped make these things possible was the flexibility of its pricing plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase single-ride or full-day passes are referred to as **Casual riders (Casual)**. Customers who purchase annual memberships are **Cyclistic members (Member)**.
 
 Cyclistic’s finance analysts have concluded that annual members are much more profitable than casual riders. Although the pricing flexibility helps Cyclistic attract more customers, marketing director believes that maximizing the number of annual members will be key to future growth.
 Rather than creating a marketing campaign that targets all-new customers, she believes there is a very good chance to convert casual riders into members. She notes that casual riders are already aware of the Cyclistic program and have chosen Cyclistic for their mobility needs.
@@ -45,6 +45,7 @@ install.packages("ggplot2")
 install.packages("readr")
 install.packages("dplyr")
 install.packages("gridExtra")
+install.packages("reshape2") # not use?
 ```
 ```{r}
 library(tidyverse)
@@ -54,7 +55,7 @@ library(readr)
 library(dplyr)
 library(gridExtra)
 ```
-Step 2. import data from downloaded files.
+Step 2. import data from downloaded files. I chose `Divvy_Trips_2019_Q1.zip` to `Divvy_Trips_2019_Q4.zip` files to use.
 ```{r}
 Trips_2019_Q1 <- read_csv("Divvy_Trips_2019_Q1.csv")
 Trips_2019_Q2 <- read_csv("Divvy_Trips_2019_Q2.csv")
@@ -149,18 +150,167 @@ Sys.setlocale("LC_TIME", "en_US.UTF-8")
 Extract data and time information from `start_time` and `end_time`.
 I want to get the year, month, start/end date, and weekday information.
 ```{r}
-Trips_2019v1$year <- as.numeric(format(Trips_2019v1$start_time, "%Y"))
+Trips_2019v1$year <- as.integer(format(Trips_2019v1$start_time, "%Y"))
 #Trips_2019v1$month <- as.numeric(format(Trips_2019v1$start_time, "%m"))
 Trips_2019v1$month <- format(Trips_2019v1$start_time, "%b")
 Trips_2019v1$days <- weekdays(Trips_2019v1$start_time)
-Trips_2019v1$start_date <- as.numeric(format(Trips_2019v1$start_time, "%d"))
-Trips_2019v1$end_date <- as.numeric(format(Trips_2019v1$end_time, "%d"))
+Trips_2019v1$start_date <- as.integer(format(Trips_2019v1$start_time, "%d"))
+Trips_2019v1$end_date <- as.integer(format(Trips_2019v1$end_time, "%d"))
 ```
 And convert current start/end times to show time data only.
 ```{r}
 Trips_2019v1$start_time <- format(Trips_2019v1$start_time, "%H:%M:%S")
 Trips_2019v1$end_time <- format(Trips_2019v1$end_time, "%H:%M:%S")
 ```
+As we don't need values in float, convert other columns in numeric to integer to save the memory.
+```{r}
+cols_to_int <- c("trip_id",
+                 "bikeid",
+                  "from_station_id",
+                 "to_station_id",
+                 "duration_min",
+                 "duration_sec")
+Trips_2019v1[cols_to_int] <- lapply(Trips_2019v1[cols_to_int], as.integer)
+```
+I will remove redundant columns for further analysis. Copy a new dataframe after remove `year` and `duration_sec` columns.
+```{r}
+Trips_2019v2 <- Trips_2019v1 %>%
+  select(-c(year,
+            duration_sec))
+```
+Rearrange columns order for better visibility.
+```{r}
+Trips_2019v2 <- Trips_2019v2[, c("trip_id",
+                                 "bikeid",
+                                 "usertype",
+                                 "month",
+                                 "start_date",
+                                 "days",
+                                 "start_time",
+                                 "end_date",
+                                 "end_time",
+                                 "from_station_id",
+                                 "from_station_name",
+                                 "to_station_id",
+                                 "to_station_name",
+                                 "duration_min")]
+```
+So far, `usertype`column has not inspected yet. Check for the occurrences of values in this column.
+```{r}
+table(Trips_2019v2$usertype)
+```
+There are 880,631 rows of **Customer** and 2,937,360 rows of **Subscriber**. Update the terms to align with the terms (**Casual**, **Member**) in the scenario.
+```{r}
+Trips_2019v2 <- Trips_2019v2 %>% mutate(usertype = recode(usertype,
+                                          "Customer" = 'Casual',
+                                          "Subscriber" = 'Member'))
+```
+Finally, reorder the order of days to appear.
+```{r}
+Trips_2019v2$days <- ordered(Trips_2019v2$days, levels=c("Monday",
+                                                         "Tuesday",
+                                                         "Wednesday",
+                                                         "Thursday",
+                                                         "Friday",
+                                                         "Saturday",
+                                                         "Sunday"))
+```
+The pre-processing part is not complete. In summary, following works have done in this part:
+1. Imported data files and converted to dataframe
+2. Matched attributes in each dataframe to merge them into one
+3. Remove, add, and modify the variables and attributes as necessary
+4. Built a clean dataframe from the original for further analysis
+
+Now, continue with the data analysis. This analysis needs to provide the answer to given question: How do annual members and casual riders use Cyclistic bikes differently?
+Let's make a quick comparison between the user types, **Casual** and **Member**.
+```{r}
+table(Trips_2019v2$usertype)
+```
+The fraction of Casual ride is about 23% of total rides. Then how these use patterns differ, compared to the that of members? Let's compare brief statistics between user type.
+```{r}
+aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=mean)
+aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=median)
+aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=max)
+aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=min)
+```
+Summary of stats are as shown below:
+       Casual   Member
+mean   56.52667 13.83650
+median 25       9
+max    177200   150943
+min    1        1
+
+min and max values are seem too extreme. However, the mean value suggests difference between users: Casual members ride longer than Members per ride, even though their portion of total usage is less than 25%. On the contrary, members ride for short distance, but more frequently.
+# TODO How to deal with extreme values?
+
+Still this information is not enough to fully understand different behaviors between users. Let's take a look again for mean values, but this time hime how those values are varies per weekday. Let's plot a line chart for daily usage patterns.
+```{r}
+df_weekdays$days <- factor(df_weekdays$days,
+                           levels = c("Monday",
+                                      "Tuesday",
+                                      "Wednesday",
+                                      "Thursday",
+                                      "Friday",
+                                      "Saturday",
+                                      "Sunday"))
+
+# Create line chart
+p1 <- ggplot(df_weekdays, aes(x = days, y = mean_duration, color = usertype, group = usertype)) +
+  geom_line() +
+  scale_color_brewer(palette = "Dark2") +
+  labs(x = "Days", y = "Mean Duration (min)") +
+  theme_bw()
+
+# Save plot to PNG file
+ggsave("duration_weekdays.png", plot = p1)
+```
+Roughly speaking, most members daily ride a bike about 10 to 15 minutes in average. However, casual users ride about 50 to 60 minutes in average.
+To verify this hypothesis, do a similar analysis for each month's pattern.
+```{r}
+# Create ordered factor for months
+month_levels <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+Trips_2019v2$month <- factor(Trips_2019v2$month, levels = month_levels, ordered = TRUE)
+
+# Calculate mean duration by usertype and month
+df_months <- Trips_2019v2 %>%
+  group_by(usertype, month) %>%
+  summarize(mean_duration = mean(duration_min))
+
+# Create line chart
+p2 <- ggplot(df_months, aes(x = month, y = mean_duration, color = usertype, group = usertype)) +
+  geom_line() +
+  labs(x = "Month", y = "Mean Duration (min)") +
+  theme_bw()
+
+ggsave("duration_months.png", plot = p2)
+```
+The average duration of casual users soar in February, up to near 150 minutes. except this month, the usage patterns are in line with the weekday patterns.
+# TODO what happened at that time?
+# TODO: refer to DIVVYGOLD event https://chi.streetsblog.org/2019/02/05/go-for-the-divvygold-the-system-has-launched-its-winter-cycling-challenge
+
+
+
+# TODO
+https://www.chicago.gov/city/en/depts/cdot/provdrs/bike/news/2023/april/divvy-for-the-entire-city--divvy-service-hits-all-50-wards.html
+
+Although the difference is visible, still the purpose of the ride is still unclear. Let's analyze the daily ride numbers to find any other information.
+```{r}
+df_daily_no$days <- factor(df_daily_no$days, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"), ordered = TRUE)
+
+# Plot the data as a bar chart
+p3 <- ggplot(df_daily_no, aes(x = days, y = number_of_rides, fill = usertype)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = scales::label_number()) +
+  labs(title = "Number of Rides by User Type and Day",
+       x = "Day",
+       y = "Number of Rides")
+
+ggsave("ride_no_weekly.png", plot = p3)
+```
+Now the pattern is more understandable. Members use the ride for Monday to Friday, then drops on Saturday and Sunday. We can assume that those rides are mostly used for commute to work, which make senses when the average ride duration is less than 20 minutes. At the same time, rides are increased during weekends for casual riders, as we may assume that those are leisurely purpose. Still, casual riders are using the bike on the weekdays too.
+
+Let's take a look on the patterns on hourly basis on each day to verify this finding.
+
 
 
 
