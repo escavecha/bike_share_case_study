@@ -9,6 +9,9 @@ library(dplyr)
 library(gridExtra)
 library(reshape2)
 
+# NOTE: set the working directory accordingly
+setwd("C:/Google_DA_CaseStudy/case1")
+
 # import csv data files
 Trips_2019_Q1 <- read_csv("Divvy_Trips_2019_Q1.csv")
 Trips_2019_Q2 <- read_csv("Divvy_Trips_2019_Q2.csv")
@@ -51,11 +54,11 @@ identical(df1_types, df4_types)
 
 
 # Combine all quarterly data into single annual 
-Trips_2019 <- bind_rows(Trips_2019_Q1, Trips_2019_Q2, Trips_2019_Q3, Trips_2019_Q4)
+Trips_2019v0 <- bind_rows(Trips_2019_Q1, Trips_2019_Q2, Trips_2019_Q3, Trips_2019_Q4)
 
 
 # drop irrelevant columns then save to new data frame
-Trips_2019v1 <- Trips_2019 %>% select(-c(gender, birthyear))
+Trips_2019v1 <- Trips_2019v0 %>% select(-c(gender, birthyear))
 
 
 # add a new column to show used time in minutes
@@ -155,29 +158,26 @@ aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=min)
 #  labs(x = "Duration (min)", y = "Count")
 
 
-# compare average use time by casual vs. member per day
-aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype +
-  Trips_2019v2$days, FUN=mean)
 
-# Convert 'days' column to factor
-df_weekdays$days <- factor(df_weekdays$days,
-                           levels = c("Monday",
-                                      "Tuesday",
-                                      "Wednesday",
-                                      "Thursday",
-                                      "Friday",
-                                      "Saturday",
-                                      "Sunday"))
+# aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype +
+#   Trips_2019v2$days, FUN=mean)
+
+# compare average use time by casual vs. member per day
+df_mean_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype +
+  Trips_2019v2$days, FUN=mean)
+colnames(df_mean_duration) <- c("usertype", "days", "mean_duration")
 
 # Create line chart
-p1 <- ggplot(df_weekdays, aes(x = days, y = mean_duration, color = usertype, group = usertype)) +
+p1 <- ggplot(df_mean_duration, aes(x = days, y = mean_duration, group = usertype, color = usertype)) +
   geom_line() +
-  scale_color_brewer(palette = "Dark2") +
-  labs(x = "Days", y = "Mean Duration (min)") +
-  theme_bw()
+  geom_point() +
+  scale_x_discrete(limits = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) +
+  labs(x = "Day of Week", y = "Mean Duration (min)", title = "Mean Trip Duration by Day and User Type")
 
-# Save plot to PNG file
-ggsave("duration_weekdays.png", plot = p1)
+# Display ans save plot
+print(p1)
+ggsave("p1_duration_weekdays.png", plot = p1)
+
 
 # Create ordered factor for months
 month_levels <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
