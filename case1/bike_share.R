@@ -626,7 +626,48 @@ p11 <- grid.arrange(p11a_weekday, p11b_weekday, ncol=1)
 print(p11)
 ggsave("p11_weekday_hour.png", p11)
 
+# TODO fix p11a to average per station
+# for average week data
+weekday_data_mean <- Trips_2019v2 %>%
+  filter(days %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")) %>%
+  mutate(hour = hour(hms(start_time))) %>%
+  group_by(usertype, hour) %>%
+  summarise(number_of_rides = n() / n_unique_from_station_id,
+            average_duration = mean(duration_min)) %>%
+  arrange(usertype, hour)
 
+# Create the first plot
+p11a_weekday_mean <- weekday_data_mean %>%
+  ggplot(aes(x = hour,
+             y = average_duration,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  geom_point() +
+  labs(x = 'Hour', y = 'Average duration (min)',
+       title = 'Average duration by user type and hour on Weekdays')
+
+# Create the second plot
+p11b_weekday_mean <- weekday_data_mean %>%
+  ggplot(aes(x = hour,
+             y = number_of_rides,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+  labs(x = 'Hour', y = 'Number of rides',
+       title = 'Number of rides by user type per station, hourly on Weekdays') +
+  annotate("text", x = 0, y = Inf,
+           label = paste("Total number of stations:", n_unique_from_station_id),
+           hjust = 0, vjust = 0.9)
+
+p11_weekdays_mean <- grid.arrange(p11a_weekday_mean, p11b_weekday_mean, ncol=1)
+print(p11_weekdays_mean)
+ggsave("p11_weekdays_average_rides_per_station.png", plot = p11_weekdays_mean)
+
+
+# TODO fix p12a to average per station
 # gather and plot for weekens data
 weekend_data <- Trips_2019v2 %>%
   filter(days %in% c("Saturday", "Sunday")) %>%
@@ -663,6 +704,47 @@ p12b_weekend <- weekend_data %>%
 p12 <- grid.arrange(p12a_weekend, p12b_weekend, ncol=1)
 print(p12)
 ggsave("p12_weekend_hour.png", p12)
+
+
+# for average weekend data
+weekend_data_mean <- Trips_2019v2 %>%
+  filter(days %in% c("Saturday", "Sunday")) %>%
+  mutate(hour = hour(hms(start_time))) %>%
+  group_by(usertype, hour) %>%
+  summarise(number_of_rides = n() / n_unique_from_station_id,
+            average_duration = mean(duration_min)) %>%
+  arrange(usertype, hour)
+
+# Create the first plot
+p12a_weekend_mean <- weekend_data_mean %>%
+  ggplot(aes(x = hour,
+             y = average_duration,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  geom_point() +
+  labs(x = 'Hour', y = 'Average duration (min)',
+       title = 'Average duration by user type and hour on Weekends')
+
+# Create the second plot
+p12b_weekend_mean <- weekend_data_mean %>%
+  ggplot(aes(x = hour,
+             y = number_of_rides,
+             color = usertype,
+             group = usertype)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+  labs(x = 'Hour', y = 'Number of rides',
+       title = 'Number of rides by user type per station, hourly on Weekends') +
+  annotate("text", x = 0, y = Inf,
+           label = paste("Total number of stations:", n_unique_from_station_id),
+           hjust = 0, vjust = 0.9)
+
+p12_weekends_mean <- grid.arrange(p12a_weekend_mean, p12b_weekend_mean, ncol=1)
+print(p12_weekends_mean)
+ggsave("p12_weekends_average_rides_per_station.png", plot = p12_weekends_mean)
+
 
 
 # Load required libraries
