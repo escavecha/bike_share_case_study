@@ -121,8 +121,26 @@ Trips_2019v2 <- Trips_2019v2[, c("trip_id",
 # check the latest dataframe for descriptive analysis
 summary(Trips_2019v2)
 
-# check for occurences of each value in the column
-table(Trips_2019v2$usertype)
+# check for occurences of unique value in the column
+usertype_counts <- table(Trips_2019v2$usertype)
+bikeid_counts <- table(Trips_2019v2$bikeid)
+from_station_id_counts <- table(Trips_2019v2$from_station_id)
+to_station_id_counts <- table(Trips_2019v2$to_station_id)
+sum(usertype_counts)
+sum(bikeid_counts)
+sum(from_station_id_counts)
+
+# Find the number of unique values in column from_station_id
+n_unique_tripid <- length(unique(Trips_2019v2$trip_id))
+n_unique_usertype <- length(unique(Trips_2019v2$usertype))
+n_unique_bikeid <- length(unique(Trips_2019v2$bikeid))
+n_unique_from_station_id <- length(unique(Trips_2019v2$from_station_id))
+n_unique_to_station_id <- length(unique(Trips_2019v2$to_station_id))
+print(paste("number of total bikes:", n_unique_bikeid)) # 6017
+print(paste("number of bike stations:", n_unique_from_station_id)) # 616
+print(paste("total trips made in 2019:", n_unique_tripid)) # 3817991
+
+
 
 # update the label for 'Customer' to 'Casual'
 Trips_2019v2 <- Trips_2019v2 %>% mutate(usertype = recode(usertype,
@@ -209,16 +227,65 @@ p2 <- ggplot(df_months, aes(x = month,
 print(p2)
 ggsave("p2_duration_months.png", plot = p2)
 
+Trips_2019v2_challange <- Trips_2019v2 %>%
+  group_by(bikeid) %>%
+  filter(!(month == "Mar" & start_date == 1 & n() > 5)) %>%
+  ungroup()
+
+# number of users per month
+df_monthly_no <- Trips_2019v2 %>%
+  group_by(usertype, month) %>%
+  summarise(count = n())
+
+
+# Plot the data as a bar chart
+p2a <- ggplot(df_monthly_no, aes(x = month,
+                              y = count,
+                              color = usertype,
+                              group = usertype)) +
+  geom_line() +
+  geom_point() +
+  # scale_y_continuous(labels = scales::label_number()) +
+  labs(title = "Number of Rides by User Type and Month, 2019",
+       x = "Months",
+       y = "Number of Rides") +
+  geom_text(aes(label = round(count, 1)), vjust = -0.8)
+
+print(p2a)
+ggsave("p2a_ride_no_monthly.png", plot = p2a)
+
+# df_monthly_challange <- Trips_2019v2_challange %>%
+#   group_by(usertype, month) %>%
+#   summarise(count = n())
+
+df_monthly_mean <- Trips_2019v2 %>%
+  group_by(usertype, month) %>%
+  summarise(mean_trips = n() / n_unique_from_station_id)
+
+# Plot the data as a line chart with points and labels
+p2b <- ggplot(df_monthly_mean, aes(x = month,
+                                    y = mean_trips,
+                                    color = usertype,
+                                    group = usertype)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Average Number of Trips per Station by User Type and Month, 2019",
+       x = "Months",
+       y = "Number of Rides") +
+  geom_text(aes(label = round(mean_trips, 0)), vjust = -0.8) +
+  annotate("text", x = Inf, y = Inf,
+           label = paste("Total number of stations:",n_unique_from_station_id),
+           hjust = 1.1, vjust = 2)
+
+print(p2b)
+ggsave("p2b_monthly_rides_per_station.png", plot = p2b)
 
 
 # ride data by users and days, no of riders and avg. ride durarion
-# Convert the 'days' variable to a factor with ordered levels
-# df_daily_no$days <- factor(df_daily_no$days,
-#                            levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
-#                            ordered = TRUE)
-df_daily_no <- Trips_2019v2 %>%
+df_daily_no <- Trips_2019v2 %>% # total no
   group_by(usertype, days) %>%
   summarise(count = n())
+
 
 
 # Plot the data as a bar chart
@@ -229,7 +296,7 @@ p3 <- ggplot(df_daily_no, aes(x = days,
   geom_line() +
   geom_point() +
   # scale_y_continuous(labels = scales::label_number()) +
-  labs(title = "Number of Rides by User Type and Day",
+  labs(title = "Number of Rides by User Type and Day, 2019",
        x = "Days",
        y = "Number of Rides") +
   geom_text(aes(label = round(count, 1)), vjust = -0.8)
@@ -237,6 +304,30 @@ p3 <- ggplot(df_daily_no, aes(x = days,
 print(p3)
 ggsave("p3_ride_no_weekly.png", plot = p3)
 
+df_daily_no_mean <- Trips_2019v2 %>% # mean no per station
+  group_by(usertype, days) %>%
+  summarise(mean_daily = n() / n_unique_from_station_id)
+
+# Convert usertype and days to factor variables
+df_daily_no_mean$usertype <- as.factor(df_daily_no_mean$usertype)
+df_daily_no_mean$days <- as.factor(df_daily_no_mean$days)
+
+p3a <- ggplot(df_daily_no_mean, aes(x = days,
+                                    y = mean_daily,
+                                    color = usertype,
+                                    group = usertype)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Average Number of Rides per Station by User Type and Day, 2019",
+       x = "Days",
+       y = "Number of Rides") +
+  geom_text(aes(label = round(mean_daily, 0)), vjust = -0.8) +
+  annotate("text", x = Inf, y = Inf,
+           label = paste("Total number of stations:", n_unique_from_station_id),
+           hjust = 1.1, vjust = 2)
+
+print(p3a)
+ggsave("p3_weekly_rides_per_station.png", plot = p3a)
 
 # create the plot for use pattern of Monday
 monday_data <- Trips_2019v2 %>%
@@ -481,7 +572,7 @@ p10a_sun <- sunday_data %>%
        title = 'Average duration by user type and hour on Sunday')
 
 # Create the second plot
-p10b_sun <- friday_data %>%
+p10b_sun <- sunday_data %>%
   ggplot(aes(x = hour,
              y = number_of_rides,
              color = usertype,
@@ -653,18 +744,18 @@ print(p13)
 ggsave("p13_map.png", p13)
 
 
-# Count the number of occurrences of each from_station_id value
-from_station_id_counts <- table(Trips_2019v3$from_station_id)
-
-# Convert the from_station_id_counts table to a data frame
-from_station_id_counts_df <- as.data.frame(from_station_id_counts)
-
-# Set the column names of the data frame
-names(from_station_id_counts_df) <- c("from_station_id", "count")
-
-# Filter the rows of the from_station_id_counts_df data frame
-most_frequent_station_df <- from_station_id_counts_df %>% filter(count > 8921) %>% arrange(desc(count))
-least_frequent_station_df <- from_station_id_counts_df %>% filter(count < 674) %>% arrange(desc(count))
+# # Count the number of occurrences of each from_station_id value
+# from_station_id_counts <- table(Trips_2019v3$from_station_id)
+#
+# # Convert the from_station_id_counts table to a data frame
+# from_station_id_counts_df <- as.data.frame(from_station_id_counts)
+#
+# # Set the column names of the data frame
+# names(from_station_id_counts_df) <- c("from_station_id", "count")
+#
+# # Filter the rows of the from_station_id_counts_df data frame
+# most_frequent_station_df <- from_station_id_counts_df %>% filter(count > 8921) %>% arrange(desc(count))
+# least_frequent_station_df <- from_station_id_counts_df %>% filter(count < 674) %>% arrange(desc(count))
 
 
 # Count the number of occurrences of each from_station_id value and usertype
@@ -680,6 +771,27 @@ names(from_station_id_usertype_counts_df) <- c("from_station_id", "usertype", "c
 most_frequent_station_df <- from_station_id_usertype_counts_df %>% filter(count > 8921) %>% arrange(desc(count))
 least_frequent_station_df <- from_station_id_usertype_counts_df %>% filter(count < 674) %>% arrange(desc(count))
 
+# Create a list of colors to use for each usertype
+usertype_colors <- c("blue", "red")
+
+# Calculate the mean value of count
+mean_count <- mean(from_station_id_usertype_counts_df$count)
+
+# Plot a histogram of the number of occurrences of each from_station_id value per usertype
+p14 <- ggplot(#least_frequent_station_df,
+              from_station_id_usertype_counts_df,
+              aes(x = from_station_id, y = count, fill = usertype)) +
+  geom_bar(stat = "identity") +
+  xlab("From Station ID") +
+  ylab("Count") +
+  ggtitle("Histogram of From Station ID per Usertype") +
+  scale_fill_manual(values = usertype_colors) +
+  facet_wrap(~usertype) +
+  geom_hline(yintercept = mean_count, linetype = "dashed", color = "black")
+
+grid.arrange(p14)
+
+print(p14)
 
 
 

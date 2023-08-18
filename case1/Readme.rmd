@@ -137,7 +137,13 @@ According to the values in a new column 'duration_min', Current 'tripduration' c
 names(Trips_2019v1)[names(Trips_2019v1) == 'tripduration'] <- "duration_sec"
 
 ```
-Check the dataframe Trip_2019v1 using summary() function. the Minimum value in duration_min is -56.37. Since this column has calculated based on the time difference between `end_time` and `start_time`, negative value seems strange. The packet explains that those values are from the bikes are taken out of services. So I will delete those rows from the data.
+Check the dataframe Trip_2019v1 using summary() function.
+
+```{r}
+summary(Trips_2019v1)
+```
+
+the Minimum value in duration_min is -56.37. Since this column has calculated based on the time difference between `end_time` and `start_time`, negative value seems strange. The packet explains that those values are from the bikes are taken out of services. So I will delete those rows from the data.
 ```{r}
 Trips_2019v1 <- subset(Trips_2019v1, duration_min >= 0)
 ```
@@ -280,10 +286,28 @@ p2 <- ggplot(df_months, aes(x = month, y = mean_duration, color = usertype, grou
 
 ggsave("duration_months.png", plot = p2)
 ```
+
 The average duration of casual users soar in February, up to near 150 minutes. except this month, the usage patterns are in line with the weekday patterns.
 # TODO what happened at that time?
 # TODO: refer to DIVVYGOLD event https://chi.streetsblog.org/2019/02/05/go-for-the-divvygold-the-system-has-launched-its-winter-cycling-challenge
 
+there are several winter bike events in Chicago.
+
+
+```{r}
+Trips_2019v2_challange <- Trips_2019v2 %>%
+  group_by(bikeid) %>%
+  filter(!(month == "Mar" & start_date == 1 & n() > 5)) %>%
+  ungroup()
+```
+only 4989 rows are filtered out. Apparenty, some people have did particiated challange. Then how many?
+numbers has not changed significantly. so this event was not a great factor.
+the pattern is peak at Aug - most rides are seasonal. sunshine and breeze make the riding really fun.
+so unless have to, rides depends on the weather.
+
+findings: ride usage are really depends on the weather condition. people use less during winter, and more during summer.
+suggestions
+1) we can schedule the regular maintenance of the fleets focused on during winter time
 
 
 # TODO
