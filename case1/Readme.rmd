@@ -2,7 +2,7 @@
 title: "Case Study: How Does a Bike-Share Navigate Speedy Success?"
 author: John Lee
 date: < the current date DD/MM/YYYY >
-output: github_document
+output: rmarkdown::html_vignette
 ---
 This work is an output of the capstone project for Google Data Analytics Professional Certificate.
 (https://www.coursera.org/professional-certificates/google-data-analytics) This fictional case study packet is based on the Divvy case study, "'Sophisticated, Clear, and Polished’: Divvy and Data Visualization" written by Kevin Hartman. (https://artscience.blog/home/divvy-dataviz-case-study)
