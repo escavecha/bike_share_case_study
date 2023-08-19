@@ -22,7 +22,8 @@ Rather than creating a marketing campaign that targets all-new customers, she be
 The marketing director set a clear goal: Design marketing strategies aimed at converting casual riders into annual members. In order to do that, however, the marketing analyst team needs to better understand how annual members and casual riders differ, why casual riders would buy a membership, and how digital media could affect their marketing tactics. She and her team are interested in analyzing the Cyclistic historical bike trip data to identify trends. You have assigned to the first question to the answer: How do annual members and casual riders use Cyclistic bikes differently?
 
 Statement of Purpose:
-Use the given data set for 12-month period, analyze different patterns and present findings and suggestions along with the result of analysis. R has used for this work.
+Use the given data set for 12-month period, analyze different patterns and present findings
+and suggestions along with the result of analysis. R has used for this work.
 
 Data source:
 Cyclistic's historical trip data from 2013 has provided for analysis: https://divvy-tripdata.s3.amazonaws.com/index.html
@@ -55,7 +56,9 @@ library(readr)
 library(dplyr)
 library(gridExtra)
 ```
-Step 2. import data from downloaded files. I chose `Divvy_Trips_2019_Q1.zip` to `Divvy_Trips_2019_Q4.zip` files to use. set the working directory by `setwd()` command as necessary.
+Step 2. import data from downloaded files.
+I chose `Divvy_Trips_2019_Q1.zip` to `Divvy_Trips_2019_Q4.zip` files to use.
+set the working directory by `setwd()` command as necessary.
 ```{r}
 Trips_2019_Q1 <- read_csv("Divvy_Trips_2019_Q1.csv")
 Trips_2019_Q2 <- read_csv("Divvy_Trips_2019_Q2.csv")
@@ -68,7 +71,8 @@ Quick check for imported dataframe sizes.
 - Trips_2019_Q3: 1,640,718 rows x 12 columns
 - Trips_2019_Q4: 704,054 rows x 12 columns
 
-Step 3. check for column names to quick review. To merge data frames into one, column names and attributes should consistent each other.
+Step 3. check for column names to quick review. To merge data frames into one,
+column names and attributes should consistent each other.
 ```{r}
 colnames(Trips_2019_Q1)
 colnames(Trips_2019_Q2)
@@ -123,7 +127,7 @@ Trips_2019v0 <- bind_rows(Trips_2019_Q1, Trips_2019_Q2, Trips_2019_Q3, Trips_201
 Keep this original dataframe for backup. Its size is 3,818,004 rows by 12 columns.
 
 Step 4. Clean up data to prepare analysis.
-Drop irrelevant columns ("gender", "birthyear") then save to new data frame
+Drop irrelevant columns ("gender", "birthyear") then save to the new data frame.
 ```{r}
 Trips_2019v1 <- Trips_2019v0 %>% select(-c(gender, birthyear))
 ```
@@ -132,7 +136,8 @@ Add a new column to show trip duration time in minutes.
 Trips_2019v1$duration_min <- as.numeric(difftime(Trips_2019v1$end_time, Trips_2019v1$start_time, units = "mins"))
 
 ```
-According to the values in a new column 'duration_min', Current 'tripduration' column indicates values in seconds. To avoid confusion, change the column name accordingly.
+According to the values in a new column 'duration_min'.
+Current 'tripduration' column indicates values in seconds. To avoid confusion, change the column name accordingly.
 ```{r}
 names(Trips_2019v1)[names(Trips_2019v1) == 'tripduration'] <- "duration_sec"
 
@@ -178,7 +183,8 @@ cols_to_int <- c("trip_id",
                  "duration_sec")
 Trips_2019v1[cols_to_int] <- lapply(Trips_2019v1[cols_to_int], as.integer)
 ```
-I will remove redundant columns for further analysis. Copy a new dataframe after remove `year` and `duration_sec` columns.
+I will remove redundant columns for further analysis.
+Copy a new dataframe after remove `year` and `duration_sec` columns.
 ```{r}
 Trips_2019v2 <- Trips_2019v1 %>%
   select(-c(year,
@@ -201,11 +207,13 @@ Trips_2019v2 <- Trips_2019v2[, c("trip_id",
                                  "to_station_name",
                                  "duration_min")]
 ```
-So far, `usertype`column has not inspected yet. Check for the occurrences of values in this column.
+So far, `usertype`column has not inspected yet.
+Check for the occurrences of values in this column.
 ```{r}
 table(Trips_2019v2$usertype)
 ```
-There are 880,631 rows of **Customer** and 2,937,360 rows of **Subscriber**. Update the terms to align with the terms (**Casual**, **Member**) in the scenario.
+There are 880,631 rows of **Customer** and 2,937,360 rows of **Subscriber**.
+Update the terms to align with the terms (**Casual**, **Member**) in the scenario.
 ```{r}
 Trips_2019v2 <- Trips_2019v2 %>% mutate(usertype = recode(usertype,
                                           "Customer" = 'Casual',
@@ -221,18 +229,19 @@ Trips_2019v2$days <- ordered(Trips_2019v2$days, levels=c("Monday",
                                                          "Saturday",
                                                          "Sunday"))
 ```
-The pre-processing part is not complete. In summary, following works have done in this part:
-1. Imported data files and converted to dataframe
-2. Matched attributes in each dataframe to merge them into one
+The pre-processing part is not complete. In summary, following works will be done in this part:
+1. Import data files and converted to dataframe
+2. Match attributes in each dataframe to merge them into one
 3. Remove, add, and modify the variables and attributes as necessary
-4. Built a clean dataframe from the original for further analysis
+4. Build a clean dataframe from the original for further analysis
 
 Now, continue with the data analysis. This analysis needs to provide the answer to given question: How do annual members and casual riders use Cyclistic bikes differently?
 Let's make a quick comparison between the user types, **Casual** and **Member**.
 ```{r}
 table(Trips_2019v2$usertype)
 ```
-The fraction of Casual ride is about 23% of total rides. Then how these use patterns differ, compared to the that of members? Let's compare brief statistics between user type.
+The fraction of Casual ride is about 23% of total rides.
+Then how these use patterns differ, compared to the that of members? Let's compare brief statistics between user type.
 ```{r}
 aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=mean)
 aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=median)
@@ -256,7 +265,8 @@ df_mean_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype 
 colnames(df_mean_duration) <- c("usertype", "days", "mean_duration")
 
 # Create line chart
-p1 <- ggplot(df_mean_duration, aes(x = days, y = mean_duration, group = usertype, color = usertype)) +
+p1 <- ggplot(df_mean_duration,
+             aes(x = days, y = mean_duration, group = usertype, color = usertype)) +
   geom_line() +
   geom_point() +
   scale_x_discrete(limits = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) +
