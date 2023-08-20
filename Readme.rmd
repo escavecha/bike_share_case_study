@@ -3,45 +3,108 @@ title: "Case Study: How Does a Bike-Share Navigate Speedy Success?"
 author: John Lee
 date: < the current date DD/MM/YYYY >
 output: html_vignette
+editor_options: 
+  markdown: 
+    wrap: 90
 ---
 
-This work is an output of the capstone project for Google Data Analytics Professional Certificate.
-(https://www.coursera.org/professional-certificates/google-data-analytics)
-This fictional case study packet is based on the Divvy case study, "'Sophisticated, Clear, and Polished’: Divvy and Data Visualization" written by
-Kevin Hartman. (https://artscience.blog/home/divvy-dataviz-case-study)
-Below describes how the bike-sharing user patterns differ in given data set, and provides findings and suggestions based on the result of the analysis.
+## Case Study: How Does a Bike-Share Navigate Speedy Success?
 
-Scenario:
-You are a junior data analyst working in the marketing analyst team at **Cyclistic**, a bike-share company in Chicago. The marketing director believes the company’s future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently.
-From these insights, your team will design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your recommendations, so they must be backed up with compelling data insights and professional data visualizations.
+This work is an output of the capstone project for *Google Data Analytics Professional
+Certificate*
+([link](https://www.coursera.org/professional-certificates/google-data-analytics)).
 
-In 2016, Cyclistic launched a bike-share offering. Since then, the program has grown to a fleet of 5,824 bicycles that are geo-tracked and locked into a network of 692 stations across Chicago.
-The bikes can be unlocked from one station and returned to any other station in the system anytime.
-Until now, Cyclistic’s marketing strategy relied on building general awareness and appealing to broad consumer segments. One approach that helped make these things possible was the flexibility of its pricing plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase single-ride or full-day passes are referred to as **Casual riders (Casual)**. Customers who purchase annual memberships are **Cyclistic members (Member)**.
+This fictional case study packet is based on the *Divvy* case study, "'Sophisticated,
+Clear, and Polished': Divvy and Data Visualization" written by Kevin Hartman
+([link](https://artscience.blog/home/divvy-dataviz-case-study%3E)).
 
-Cyclistic’s finance analysts have concluded that annual members are much more profitable than casual riders. Although the pricing flexibility helps Cyclistic attract more customers, marketing director believes that maximizing the number of annual members will be key to future growth.
-Rather than creating a marketing campaign that targets all-new customers, she believes there is a very good chance to convert casual riders into members. She notes that casual riders are already aware of the Cyclistic program and have chosen Cyclistic for their mobility needs.
+Below describes how the bike-sharing user patterns differ in given data set, and provides
+findings and suggestions based on the result of the analysis.
 
-The marketing director set a clear goal: Design marketing strategies aimed at converting casual riders into annual members. In order to do that, however, the marketing analyst team needs to better understand how annual members and casual riders differ, why casual riders would buy a membership, and how digital media could affect their marketing tactics. She and her team are interested in analyzing the Cyclistic historical bike trip data to identify trends. You have assigned to the first question to the answer: How do annual members and casual riders use Cyclistic bikes differently?
+> Note: *Divvy* is a bike share system across Chicago and Evanston, consisted of a fleet
+> of bikes that are locked into a network of docking stations throughout the region. The
+> bikes can be unlocked from one station and returned to any other station in the system.
+> People use bike share to explore Chicago, commute to work or school, run errands, get to
+> appointments or social engagements, and more. Divvy is a program of the Chicago
+> Department of Transportation (CDOT), which owns the city's bikes, stations and
+> vehicles.([Link](https://divvybikes.com/about))
 
-Statement of Purpose:
-Use the given data set for 12-month period, analyze different patterns and present findings
-and suggestions along with the result of analysis. R has used for this work.
+### Scenario
 
-Data source:
-Cyclistic's historical trip data from 2013 has provided for analysis: https://divvy-tripdata.s3.amazonaws.com/index.html
-Note: The datasets have a different name because Cyclistic is a fictional company.
-The data has been made available or case study by Motivate International Inc. under the license (https://ride.divvybikes.com/data-license-agreement)
-In this study, I have downloaded quarterly data in 2019. Each file is provided with ZIP format. each file contains a csv file.
+You are a junior data analyst working in the marketing analyst team at *Cyclistic*, a
+bike-share company in Chicago. The marketing director believes the company's future
+success depends on maximizing the number of annual memberships. Therefore, your team wants
+to understand how casual riders and annual members use Cyclistic bikes differently.
 
-Data pre-processing
-this work is following in below steps
-1. import libraries for use.
-2. import data from downloaded files.
-3. check variable names, attributes in datasets to merge them into a single dataframe.
-4. clean up data to prepare analysis.
+From these insights, your team will design a new marketing strategy to convert casual
+riders into annual members. But first, Cyclistic executives must approve your
+recommendations, so they must be backed up with compelling data insights and professional
+data visualizations.
 
-Step 1. Install and import libraries for use.
+In 2016, Cyclistic launched a bike-share offering. Since then, the program has grown to a
+fleet of 5,824 bicycles that are geo-tracked and locked into a network of 692 stations
+across Chicago. The bikes can be unlocked from one station and returned to any other
+station in the system anytime.
+
+Until now, Cyclistic's marketing strategy relied on building general awareness and
+appealing to broad consumer segments.
+
+One approach that helped make these things possible was the flexibility of its pricing
+plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase
+single-ride or full-day passes are referred to as "Casual riders"(*Casual*). Customers who
+purchase annual memberships are "Cyclistic members"(*Member*).
+
+Cyclistic's finance analysts have concluded that annual members are much more profitable
+than casual riders. Although the pricing flexibility helps Cyclistic attract more
+customers, marketing director believes that maximizing the number of annual members will
+be key to future growth.
+
+Rather than creating a marketing campaign that targets all-new customers, she believes
+there is a very good chance to convert casual riders into members. She notes that casual
+riders are already aware of the Cyclistic program and have chosen Cyclistic for their
+mobility needs.
+
+The marketing director set a clear goal: Design marketing strategies aimed at converting
+casual riders into annual members. In order to do that, however, the marketing analyst
+team needs to better understand:
+
+1.  How annual members and casual riders differ
+2.  Why casual riders would buy a membership
+3.  And how digital media could affect their marketing tactics.
+
+She and her team are interested in analyzing the Cyclistic historical bike trip data to
+identify trends. You have assigned to the first question to the answer: **How do annual
+members and casual riders use Cyclistic bikes differently?**
+
+### Statement of Purpose
+
+Use the given data set for 12-month period, analyze different patterns and present
+findings and suggestions along with the result of analysis. R has used for this work.
+
+### Data source
+
+Cyclistic's historical trip data from 2013 to July 2023 has provided for analysis:
+([link](https://divvy-tripdata.s3.amazonaws.com/index.html))
+
+> Note: The datasets have a different name, as *Cyclistic* is a fictional company.
+
+The data has been made available or case study by *Motivate International Inc.* under this
+license ([link](https://ride.divvybikes.com/data-license-agreement)).
+
+In this study, I have downloaded quarterly data in 2019. Each file is provided with `zip`
+format. each file contains a `csv` file.
+
+First, data pre-processing work is following in below steps.
+
+1.  import libraries for use.
+2.  import data from downloaded files.
+3.  check variable names, attributes in datasets to merge them into a single dataframe.
+4.  clean up data to prepare analysis.
+
+### Data Pre-processing
+
+#### Step 1. Install and import libraries
+
 ```{r}
 install.packages("tidyverse")
 install.packages("lubricate")
@@ -51,6 +114,7 @@ install.packages("dplyr")
 install.packages("gridExtra")
 install.packages("reshape2") # not use?
 ```
+
 ```{r}
 library(tidyverse)
 library(lubridate)
@@ -59,43 +123,41 @@ library(readr)
 library(dplyr)
 library(gridExtra)
 ```
-Step 2. import data from downloaded files.
-I chose `Divvy_Trips_2019_Q1.zip` to `Divvy_Trips_2019_Q4.zip` files to use.
-set the working directory by `setwd()` command as necessary.
+
+#### Step 2. import data from downloaded files
+
+I chose `Divvy_Trips_2019_Q1.zip` to `Divvy_Trips_2019_Q4.zip` files to use. set the
+working directory by `setwd()` command as necessary.
+
 ```{r}
 Trips_2019_Q1 <- read_csv("Divvy_Trips_2019_Q1.csv")
 Trips_2019_Q2 <- read_csv("Divvy_Trips_2019_Q2.csv")
 Trips_2019_Q3 <- read_csv("Divvy_Trips_2019_Q3.csv")
 Trips_2019_Q4 <- read_csv("Divvy_Trips_2019_Q4.csv")
 ```
-Quick check for imported dataframe sizes.
-- Trips_2019_Q1: 365,069 rows x 12 columns
-- Trips_2019_Q2: 1,108,163 rows x 12 columns
-- Trips_2019_Q3: 1,640,718 rows x 12 columns
-- Trips_2019_Q4: 704,054 rows x 12 columns
 
-Step 3. check for column names to quick review. To merge data frames into one,
-column names and attributes should consistent each other.
+Quick check for imported dataframe sizes.
+
+-   Trips_2019_Q1: 365,069 rows x 12 columns
+-   Trips_2019_Q2: 1,108,163 rows x 12 columns
+-   Trips_2019_Q3: 1,640,718 rows x 12 columns
+-   Trips_2019_Q4: 704,054 rows x 12 columns
+
+#### Step 3. check for column names to quick review
+
+To merge data frames into one, column names and attributes should consistent each other.
+
 ```{r}
 colnames(Trips_2019_Q1)
 colnames(Trips_2019_Q2)
 colnames(Trips_2019_Q3)
 colnames(Trips_2019_Q4)
 ```
-Except `Trips_2019_Q2`, column names in other dataframes are identical as below:
- [1] "trip_id"           "start_time"        "end_time"          "bikeid"            "tripduration"
- [6] "from_station_id"   "from_station_name" "to_station_id"     "to_station_name"   "usertype"
-[11] "gender"            "birthyear"
 
-While `Trips_2019_Q2` shows different column names, but the attributes look same.
- [1] "01 - Rental Details Rental ID"                    "01 - Rental Details Local Start Time"
- [3] "01 - Rental Details Local End Time"               "01 - Rental Details Bike ID"
- [5] "01 - Rental Details Duration In Seconds Uncapped" "03 - Rental Start Station ID"
- [7] "03 - Rental Start Station Name"                   "02 - Rental End Station ID"
- [9] "02 - Rental End Station Name"                     "User Type"
-[11] "Member Gender"                                    "05 - Member Details Member Birthday Year"
+Except `Trips_2019_Q2`, column names in other dataframes are identical. While
+`Trips_2019_Q2` shows different column names, but the attributes look same. Rename the
+column names to match to the others.
 
-Rename the column names to match to the others.
 ```{r}
 Trips_2019_Q2 <- rename(Trips_2019_Q2,
                         trip_id = "01 - Rental Details Rental ID",
@@ -112,7 +174,10 @@ Trips_2019_Q2 <- rename(Trips_2019_Q2,
                         birthyear = "05 - Member Details Member Birthday Year"
                         )
 ```
-Inspect the data types for each column. If all matches, then the identical will return 'true'.
+
+Inspect the data types for each column. If all matches, then the identical functions will
+return 'TRUE'.
+
 ```{r}
 df1_types <- sapply(Trips_2019_Q1, class)
 df2_types <- sapply(Trips_2019_Q2, class)
@@ -122,78 +187,103 @@ identical(df1_types, df2_types)
 identical(df1_types, df3_types)
 identical(df1_types, df4_types)
 ```
-Combine all quarterly data into single dataframe to show annual data.
+
+Combine all quarterly data into single dataframe to show annual data. Keep this original
+dataframe for backup.
 
 ```{r}
 Trips_2019v0 <- bind_rows(Trips_2019_Q1, Trips_2019_Q2, Trips_2019_Q3, Trips_2019_Q4)
 ```
-Keep this original dataframe for backup. Its size is 3,818,004 rows by 12 columns.
 
-Step 4. Clean up data to prepare analysis.
-Drop irrelevant columns ("gender", "birthyear") then save to the new data frame.
+#### Step 4. Clean up data to prepare analysis.
+
+Drop irrelevant columns (`gender`,`birthyear`) then save to the new data frame.
+
 ```{r}
 Trips_2019v1 <- Trips_2019v0 %>% select(-c(gender, birthyear))
 ```
-Add a new column to show trip duration time in minutes.
+
+Add a new column to show trip duration time taken in minutes.
+
 ```{r}
 Trips_2019v1$duration_min <- as.numeric(difftime(Trips_2019v1$end_time, Trips_2019v1$start_time, units = "mins"))
 
 ```
-According to the values in a new column 'duration_min'.
-Current 'tripduration' column indicates values in seconds. To avoid confusion, change the column name accordingly.
+
+According to the values in a new column `duration_min`. Current `tripduration` column
+indicates values in seconds. To avoid confusion, change the column name accordingly.
+
 ```{r}
 names(Trips_2019v1)[names(Trips_2019v1) == 'tripduration'] <- "duration_sec"
 
 ```
-Check the dataframe Trip_2019v1 using summary() function.
+
+Check the dataframe `Trip_2019v1` using `summary()` function.
 
 ```{r}
 summary(Trips_2019v1)
 ```
 
-the Minimum value in duration_min is -56.37. Since this column has calculated based on the time difference between `end_time` and `start_time`, negative value seems strange. The packet explains that those values are from the bikes are taken out of services. So I will delete those rows from the data.
+The Minimum value in duration_min is -56.37. Since this column has calculated based on the
+time difference between `end_time` and `start_time`, negative value seems strange. The
+packet explains that those values are from the bikes are taken out of services. So I will
+delete those rows from the data.
+
 ```{r}
 Trips_2019v1 <- subset(Trips_2019v1, duration_min >= 0)
 ```
-Now updated dataframe has 3,817,991 rows, or 13 rows are removed - It won't affect much for the analysis.
 
-(Optional) If your OS language is not set to English, then it would be better to set them to English when extracting dates.
+Now updated dataframe has 3,817,991 rows, which 13 rows are removed - It won't affect much
+for the analysis.
+
+(Optional) If your OS language is not set to English, then it would be better to set them
+to English when extracting dates.
+
 ```{r}
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
 ```
-Extract data and time information from `start_time` and `end_time`.
-I want to get the year, month, start/end date, and weekday information.
+
+Extract data and time information from `start_time` and `end_time`. I want to get the
+year, month, start/end date, and weekday information.
+
 ```{r}
 Trips_2019v1$year <- as.integer(format(Trips_2019v1$start_time, "%Y"))
-#Trips_2019v1$month <- as.numeric(format(Trips_2019v1$start_time, "%m"))
 Trips_2019v1$month <- format(Trips_2019v1$start_time, "%b")
 Trips_2019v1$days <- weekdays(Trips_2019v1$start_time)
 Trips_2019v1$start_date <- as.integer(format(Trips_2019v1$start_time, "%d"))
 Trips_2019v1$end_date <- as.integer(format(Trips_2019v1$end_time, "%d"))
 ```
-And convert current start/end times to show time data only.
+
+And convert current `start_time` and `end_time` to show time data only.
+
 ```{r}
 Trips_2019v1$start_time <- format(Trips_2019v1$start_time, "%H:%M:%S")
 Trips_2019v1$end_time <- format(Trips_2019v1$end_time, "%H:%M:%S")
 ```
-As we don't need values in float, convert other columns in numeric to integer to save the memory.
+
+As we don't need values in float, convert other columns in numeric to integer to save the
+memory.
+
 ```{r}
 cols_to_int <- c("trip_id",
                  "bikeid",
-                  "from_station_id",
+                 "from_station_id",
                  "to_station_id",
                  "duration_min",
                  "duration_sec")
 Trips_2019v1[cols_to_int] <- lapply(Trips_2019v1[cols_to_int], as.integer)
 ```
-I will remove redundant columns for further analysis.
-Copy a new dataframe after remove `year` and `duration_sec` columns.
+
+I will remove any redundant columns, and make a Copy of a new dataframe.
+
 ```{r}
 Trips_2019v2 <- Trips_2019v1 %>%
-  select(-c(year,
-            duration_sec))
+  select(-c(year,duration_sec))
+
 ```
-Rearrange columns order for better visibility.
+
+Rearrange columns order for better visibility of titles.
+
 ```{r}
 Trips_2019v2 <- Trips_2019v2[, c("trip_id",
                                  "bikeid",
@@ -210,19 +300,24 @@ Trips_2019v2 <- Trips_2019v2[, c("trip_id",
                                  "to_station_name",
                                  "duration_min")]
 ```
-So far, `usertype`column has not inspected yet.
-Check for the occurrences of values in this column.
+
 ```{r}
 table(Trips_2019v2$usertype)
 ```
-There are 880,631 rows of **Customer** and 2,937,360 rows of **Subscriber**.
-Update the terms to align with the terms (**Casual**, **Member**) in the scenario.
+
+There are only two types of variables in the `usertype`. Update the terms to align with
+the terms in the scenario (**Casual**, **Member**). At the same time, change the column
+name to `membership`.
+
 ```{r}
 Trips_2019v2 <- Trips_2019v2 %>% mutate(usertype = recode(usertype,
                                           "Customer" = 'Casual',
                                           "Subscriber" = 'Member'))
+names(Trips_2019v2)[names(Trips_2019v2) == 'usertype'] <- "membership"
 ```
-Finally, reorder the order of days to appear.
+
+Reorder the order of days to appear.
+
 ```{r}
 Trips_2019v2$days <- ordered(Trips_2019v2$days, levels=c("Monday",
                                                          "Tuesday",
@@ -232,120 +327,273 @@ Trips_2019v2$days <- ordered(Trips_2019v2$days, levels=c("Monday",
                                                          "Saturday",
                                                          "Sunday"))
 ```
-The pre-processing part is not complete. In summary, following works will be done in this part:
-1. Import data files and converted to dataframe
-2. Match attributes in each dataframe to merge them into one
-3. Remove, add, and modify the variables and attributes as necessary
-4. Build a clean dataframe from the original for further analysis
 
-Now, continue with the data analysis. This analysis needs to provide the answer to given question: How do annual members and casual riders use Cyclistic bikes differently?
-Let's make a quick comparison between the user types, **Casual** and **Member**.
+Check for the occurrences of values in this column.
+
 ```{r}
-table(Trips_2019v2$usertype)
+# Find the number of unique values in column from_station_id
+n_unique_tripid <- length(unique(Trips_2019v2$trip_id))
+n_unique_usertype <- length(unique(Trips_2019v2$membership))
+n_unique_bikeid <- length(unique(Trips_2019v2$bikeid))
+n_unique_from_station_id <- length(unique(Trips_2019v2$from_station_id))
+n_unique_to_station_id <- length(unique(Trips_2019v2$to_station_id))
+print(paste("Number of total bikes in 2019:", n_unique_bikeid)) # 6017
+print(paste("Number of bike stations in 2019:", n_unique_from_station_id)) # 616
+print(paste("Total trips made in 2019:", n_unique_tripid)) # 3817991
 ```
-The fraction of Casual ride is about 23% of total rides.
-Then how these use patterns differ, compared to the that of members? Let's compare brief statistics between user type.
+
+Compared to the description in scenario, the size of fleet has increased, while number of
+stations has decreased.
+
+The pre-processing part is now complete. So far, following works have done:
+
+1.  Import data files and converted to dataframe
+2.  Match attributes in each dataframe to merge them into one
+3.  Remove, add, and modify the variables and attributes as necessary
+4.  Build a clean dataframe from the original for further analysis.
+
+Now, continue with the data analysis.
+
+### Data Analysis
+
+This analysis needs to provide the answer to given question: How do annual members and
+casual riders use Cyclistic bikes differently? Further analysis will focus to compare the
+patterns between the membership types, *Casual* and *Member*.
+
+#### Step 1. Check for statistics
+
+First, check for the fraction of rides made by membership.
+
 ```{r}
-aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=mean)
-aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=median)
-aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=max)
-aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=min)
+# Calculate the table of membership
+membership_table <- table(Trips_2019v2$membership)
+
+# Calculate the fraction in membership
+membership_fraction <- prop.table(membership_table)
+
+# Combine the tables
+result <- cbind(membership_table, membership_fraction)
+
+# Print the result
+print(result)
 ```
-Summary of stats are as shown below:
-       Casual   Member
-mean   56.52667 13.83650
-median 25       9
-max    177200   150943
-min    1        1
 
-min and max values are seem too extreme. However, the mean value suggests difference between users: Casual members ride longer than Members per ride, even though their portion of total usage is less than 25%. On the contrary, members ride for short distance, but more frequently.
-# TODO How to deal with extreme values?
+Majority of the rides are made by *members* (about 77% of total rides). Assume current
+fleet size is be maintained, it is our interest how to attract the *casual* users to
+become a *member*. Let's compare statistics for riding times in minutes (`duration_min`).
 
-Still this information is not enough to fully understand different behaviors between users. Let's take a look again for mean values, but this time hime how those values are varies per weekday. Let's plot a line chart for daily usage patterns.
 ```{r}
-df_mean_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype +
-  Trips_2019v2$days, FUN=mean)
-colnames(df_mean_duration) <- c("usertype", "days", "mean_duration")
+# Calculate the mean, median, max, and min of duration_min grouped by membership
+mean_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$membership, FUN=mean)
+median_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$membership, FUN=median)
+max_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$membership, FUN=max)
+min_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$membership, FUN=min)
 
-# Create line chart
-p1 <- ggplot(df_mean_duration,
-             aes(x = days, y = mean_duration, group = usertype, color = usertype)) +
-  geom_line() +
-  geom_point() +
-  scale_x_discrete(limits = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) +
-  labs(x = "Day of Week", y = "Mean Duration (min)", title = "Mean Trip Duration by Day and User Type")
+# Combine the results into a single data frame
+result <- data.frame(Membership = mean_duration[, 1],
+                     Mean = mean_duration[, 2],
+                     Median = median_duration[, 2],
+                     Max = max_duration[, 2],
+                     Min = min_duration[, 2])
 
-# Display ans save plot
-print(p1)
-ggsave("p1_duration_weekdays.png", plot = p1)
+# Print the result
+print(result)
 ```
-Roughly speaking, most members daily ride a bike about 10 to 15 minutes in average. However, casual users ride about 50 to 60 minutes in average.
-To verify this hypothesis, do a similar analysis for each month's pattern.
+
+Maximum and minimum values in `duration_min` seem too extreme. However, the mean value
+suggests difference between users: *Casual* users ride longer than *Members* per ride,
+even though their portion of total usage is less than 25%. On the contrary, *members* ride
+for short distance, but more frequently. \# TODO How to deal with extreme values?
+
+I will breakdown the patterns for detail look.
+
+#### Step 2. Monthly patterns
+
 ```{r}
 # Create ordered factor for months
 month_levels <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 Trips_2019v2$month <- factor(Trips_2019v2$month, levels = month_levels, ordered = TRUE)
 
-# Calculate mean duration by usertype and month
+# Calculate mean duration by membership and month
 df_months <- Trips_2019v2 %>%
-  group_by(usertype, month) %>%
-  summarize(mean_duration = mean(duration_min))
+  group_by(membership, month) %>%
+  summarize(mean_duration = mean(duration_min), .groups = "drop")
 
 # Create line chart
-p2 <- ggplot(df_months, aes(x = month, y = mean_duration, color = usertype, group = usertype)) +
+p1 <- ggplot(df_months, 
+             aes(x = month, 
+                 y = mean_duration, 
+                 color = membership, 
+                 group = membership)) +
   geom_line() +
-  labs(x = "Month", y = "Mean Duration (min)") +
-  theme_bw()
+  labs(x = "Month", 
+       y = "Avg. Duration (min)",
+       title = "Fig 1. Average Ride Duration by Membership, Monthly (2019)") +
+  geom_text(aes(label = round(mean_duration, 1)), vjust = -0.5)
 
-ggsave("duration_months.png", plot = p2)
+print(p1)
+ggsave("p1_monthly_duration.png", plot = p1)
 ```
 
-The average duration of casual users soar in February, up to near 150 minutes. except this month, the usage patterns are in line with the weekday patterns.
-# TODO what happened at that time?
-# TODO: refer to DIVVYGOLD event https://chi.streetsblog.org/2019/02/05/go-for-the-divvygold-the-system-has-launched-its-winter-cycling-challenge
+The average duration of casual users soar in February.
 
-there are several winter bike events in Chicago.
+> NOTE TODO there are several winter bike events in February. I suspect that those events
+> are reflected to the usage of casual users, but couldn't find the detail. related links
+> are here.
 
+We can assume that mentioned February events are factored in the patterns. or was it? To
+see the patterns in different angle, this time plot the data for number of riders for
+month.
 
 ```{r}
-Trips_2019v2_challange <- Trips_2019v2 %>%
-  group_by(bikeid) %>%
-  filter(!(month == "Mar" & start_date == 1 & n() > 5)) %>%
-  ungroup()
+df_monthly_mean <- Trips_2019v2 %>%
+  group_by(membership, month) %>%
+  summarise(mean_trips = n() / n_unique_from_station_id, .groups = "drop")
+
+# Plot the data as a line chart with points and labels
+p2 <- ggplot(df_monthly_mean, aes(x = month,
+                                    y = mean_trips,
+                                    color = membership,
+                                    group = membership)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Fig 2. Average Number of Rides per Station by Membership, Monthly (2019)",
+       x = "Months",
+       y = "Avg. Number of Rides / Station") +
+  geom_text(aes(label = round(mean_trips, 0)), vjust = -0.8) +
+  annotate("text", x = 6, y = Inf,
+           label = paste("Total number of stations:",n_unique_from_station_id),
+           hjust = 1.1, vjust = 2)
+
+print(p2)
+ggsave("p2_monthly_rides_per_station.png", plot = p2)
 ```
-only 4989 rows are filtered out. Apparenty, some people have did particiated challange. Then how many?
-numbers has not changed significantly. so this event was not a great factor.
-the pattern is peak at Aug - most rides are seasonal. sunshine and breeze make the riding really fun.
-so unless have to, rides depends on the weather.
 
-findings: ride usage are really depends on the weather condition. people use less during winter, and more during summer.
-suggestions
-1) we can schedule the regular maintenance of the fleets focused on during winter time
+the least rides are made in February, while the most rides are made in August - Which is
+seasonal.
 
+> Key finding: ride usage are really depends on the weather condition. people use less
+> during winter, and more during summer. We can schedule the annual maintenance plan of
+> the fleets focused on during winter time to allow more bike use. The peak in duration in
+> February seems to be made by casual riders - but without detailed information of events
+> it is presumed, not confirmed.
 
+#### Step 3. Daily patterns
 
-# TODO
-https://www.chicago.gov/city/en/depts/cdot/provdrs/bike/news/2023/april/divvy-for-the-entire-city--divvy-service-hits-all-50-wards.html
+Let's take a look in detail for daily patterns. Let's plot a line chart for daily usage
+patterns.
 
-Although the difference is visible, still the purpose of the ride is still unclear. Let's analyze the daily ride numbers to find any other information.
 ```{r}
-df_daily_no$days <- factor(df_daily_no$days, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"), ordered = TRUE)
+df_daily_mean_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$membership +
+  Trips_2019v2$days, FUN=mean)
+colnames(df_daily_mean_duration) <- c("membership", "days", "mean_duration")
 
-# Plot the data as a bar chart
-p3 <- ggplot(df_daily_no, aes(x = days, y = number_of_rides, fill = usertype)) +
-  geom_col(position = "dodge") +
-  scale_y_continuous(labels = scales::label_number()) +
-  labs(title = "Number of Rides by User Type and Day",
-       x = "Day",
-       y = "Number of Rides")
+# Create line chart
+p3 <- ggplot(df_daily_mean_duration, aes(x = days,
+                                   y = mean_duration,
+                                   group = membership,
+                                   color = membership)) +
+  geom_line() +
+  geom_point() +
+  scale_x_discrete(limits = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) +
+  labs(x = "Days",
+       y = "Avg. Duration (min)",
+       title = "Fig 3. Average Ride Duration by Membership, daily (2019)") +
+  geom_text(aes(label = round(mean_duration, 1)), vjust = -0.5)
 
-ggsave("ride_no_weekly.png", plot = p3)
+# Display ans save plot
+print(p3)
+ggsave("p1_daily_duration.png", plot = p3)
 ```
-Now the pattern is more understandable. Members use the ride for Monday to Friday, then drops on Saturday and Sunday. We can assume that those rides are mostly used for commute to work, which make senses when the average ride duration is less than 20 minutes. At the same time, rides are increased during weekends for casual riders, as we may assume that those are leisurely purpose. Still, casual riders are using the bike on the weekdays too.
 
-Let's take a look on the patterns on hourly basis on each day to verify this finding.
+Roughly speaking, *members* ride a bike daily, about 13 to 16 minutes in average. However,
+*casual* users ride about 50 to 60 minutes in average.
 
+Although the difference is visible, still the purpose of the ride is still unclear. Let's
+analyze the daily patterns for number or rides.
 
+```{r}
+df_daily_no_mean <- Trips_2019v2 %>% # mean no per station
+  group_by(membership, days) %>%
+  summarise(mean_daily = n() / n_unique_from_station_id, .groups = "drop")
 
+# Convert membership and days to factor variables
+df_daily_no_mean$membership <- as.factor(df_daily_no_mean$membership)
+df_daily_no_mean$days <- as.factor(df_daily_no_mean$days)
+
+p4 <- ggplot(df_daily_no_mean, aes(x = days,
+                                    y = mean_daily,
+                                    color = membership,
+                                    group = membership)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Fig 4. Average Number of Rides per Station by membership, Daily (2019)",
+       x = "Days",
+       y = "Avg. No. of Rides / Station") +
+  geom_text(aes(label = round(mean_daily, 0)), vjust = -0.8) +
+  annotate("text", x = Inf, y = Inf,
+           label = paste("Total number of stations:", n_unique_from_station_id),
+           hjust = 1.1, vjust = 2)
+
+print(p4)
+ggsave("p4_weekly_rides_per_station.png", plot = p4)
+```
+
+Now the pattern is more understandable. *Members* use the ride for Monday to Friday, then
+drops on Saturday and Sunday. We can assume that those rides are mostly used for commute
+to work, which make senses when the average ride duration is less than 20 minutes. At the
+same time, rides are increased during weekends for *casual* riders, as we may assume that
+those are leisurely purpose. Still, *casual* riders are using the bike on the weekdays
+too.
+
+> Key finding: The purpose of rides are different for membership types. *Members* mainly
+> use the ride during weekdays, whiile *casual* riders mostly use for weekends.
+
+Let's take a look on the patterns on hourly basis on each day to verify this finding. I
+will plot the charts for weekdays and weekends to see the difference.
+
+#### Step 4. Hourly patterns
+
+```{r}
+weekday_data_mean <- Trips_2019v2 %>%
+  filter(days %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")) %>%
+  mutate(hour = hour(hms(start_time))) %>%
+  group_by(membership, hour) %>%
+  summarise(number_of_rides = n() / n_unique_from_station_id,
+            average_duration = mean(duration_min), .groups = "drop") %>%
+  arrange(membership, hour)
+
+# Create the first plot
+p4a_weekday_mean <- weekday_data_mean %>%
+  ggplot(aes(x = hour,
+             y = average_duration,
+             color = membership,
+             group = membership)) +
+  geom_line() +
+  geom_point() +
+  labs(x = 'Hour', 
+       y = 'Avg. duration (min)',
+       title = 'Fig 5a. Average Duration by Membership on Weekdays, Hourly (2019)')
+
+# Create the second plot
+p4b_weekday_mean <- weekday_data_mean %>%
+  ggplot(aes(x = hour,
+             y = number_of_rides,
+             color = membership,
+             group = membership)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+  labs(x = 'Hour', 
+       y = 'No. of rides',
+       title = 'Fig 5b. Number of Rides per Station by Membership on Weekdays, Hourly (2019)') +
+  annotate("text", x = 0, y = Inf,
+           label = paste("Total number of stations:", n_unique_from_station_id),
+           hjust = 0, vjust = 0.9)
+
+p4_weekdays_mean <- grid.arrange(p4a_weekday_mean, p4b_weekday_mean, ncol=1)
+print(p4_weekdays_mean)
+ggsave("p4_weekdays.png", plot = p4_weekdays_mean)
+```
 
 

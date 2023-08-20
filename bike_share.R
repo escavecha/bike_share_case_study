@@ -157,52 +157,26 @@ Trips_2019v2$days <- ordered(Trips_2019v2$days, levels=c("Monday",
                                                          "Sunday"))
 
 # compare patterns between customers(casual) vs. Subscribers(members)
-aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=mean)
-aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=median)
-aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=max)
-aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=min)
+# Calculate the mean, median, max, and min of duration_min grouped by usertype
+mean_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=mean)
+median_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=median)
+max_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=max)
+min_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype, FUN=min)
 
-# Filter rows where the 'duration_min' column is less than or equal to 50000
-#Trips_2019v2_filtered <- subset(Trips_2019v2, duration_min <= 50000)
+# Combine the results into a single data frame
+result <- data.frame(Usertype = mean_duration[, 1],
+                     Mean = mean_duration[, 2],
+                     Median = median_duration[, 2],
+                     Max = max_duration[, 2],
+                     Min = min_duration[, 2])
 
-# Calculate summary statistics
-#ggplot(Trips_2019v2_filtered, aes(x = usertype, y = duration_min)) +
-#  geom_boxplot() +
-#  labs(x = "User Type", y = "Duration (min)")
-
-# Create plot
-#ggplot(Trips_2019v2, aes(x = duration_min, fill = usertype)) +
-#  geom_histogram(binwidth = 30, position = "dodge") +
-#  labs(x = "Duration (min)", y = "Count")
+# Print the result
+print(result)
 
 
 
-# aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype +
-#   Trips_2019v2$days, FUN=mean)
-
-# compare average use time by casual vs. member per day
-df_mean_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype +
-  Trips_2019v2$days, FUN=mean)
-colnames(df_mean_duration) <- c("usertype", "days", "mean_duration")
-
-# Create line chart
-p1 <- ggplot(df_mean_duration, aes(x = days,
-                                   y = mean_duration,
-                                   group = usertype,
-                                   color = usertype)) +
-  geom_line() +
-  geom_point() +
-  scale_x_discrete(limits = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) +
-  labs(x = "Day of Week",
-       y = "Mean Duration (min)",
-       title = "Mean Trip Duration by Day and User Type") +
-  geom_text(aes(label = round(mean_duration, 1)), vjust = -0.5)
-
-# Display ans save plot
-print(p1)
-ggsave("p1_duration_weekdays.png", plot = p1)
-
-
+# Average Ride Duration by membership, Monthly (2019)
+######################################################
 # Create ordered factor for months
 month_levels <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 Trips_2019v2$month <- factor(Trips_2019v2$month, levels = month_levels, ordered = TRUE)
@@ -213,63 +187,69 @@ df_months <- Trips_2019v2 %>%
   summarize(mean_duration = mean(duration_min))
 
 # Create line chart
-p2 <- ggplot(df_months, aes(x = month,
+p1 <- ggplot(df_months, aes(x = month,
                             y = mean_duration,
                             color = usertype,
                             group = usertype)) +
   geom_line() +
   geom_point() +
   labs(x = "Months",
-       y = "Mean Duration (min)",
-       title = "Mean Trip Duration by Month and User Type") +
+       y = "Average Duration (min)",
+       title = "Fig 1. Average Trip Duration by Month and User Type, 2019") +
   geom_text(aes(label = round(mean_duration, 1)), vjust = -0.5)
 
-print(p2)
-ggsave("p2_duration_months.png", plot = p2)
-
-Trips_2019v2_challange <- Trips_2019v2 %>%
-  group_by(bikeid) %>%
-  filter(!(month == "Mar" & start_date == 1 & n() > 5)) %>%
-  ungroup()
-
-# number of users per month
-df_monthly_no <- Trips_2019v2 %>%
-  group_by(usertype, month) %>%
-  summarise(count = n())
+print(p1)
+ggsave("p1_monthly_duration.png", plot = p1)
 
 
-# Plot the data as a bar chart
-p2a <- ggplot(df_monthly_no, aes(x = month,
-                              y = count,
-                              color = usertype,
-                              group = usertype)) +
-  geom_line() +
-  geom_point() +
-  # scale_y_continuous(labels = scales::label_number()) +
-  labs(title = "Number of Rides by User Type and Month, 2019",
-       x = "Months",
-       y = "Number of Rides") +
-  geom_text(aes(label = round(count, 1)), vjust = -0.8)
-
-print(p2a)
-ggsave("p2a_ride_no_monthly.png", plot = p2a)
+######################################################
+# Trips_2019v2_challange <- Trips_2019v2 %>%
+#   group_by(bikeid) %>%
+#   filter(!(month == "Mar" & start_date == 1 & n() > 5)) %>%
+#   ungroup()
+# 
+# # number of users per month
+# df_monthly_no <- Trips_2019v2 %>%
+#   group_by(usertype, month) %>%
+#   summarise(count = n())
+# 
+# 
+# # Plot the data as a bar chart
+# p2a <- ggplot(df_monthly_no, aes(x = month,
+#                               y = count,
+#                               color = usertype,
+#                               group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   # scale_y_continuous(labels = scales::label_number()) +
+#   labs(title = "Number of Rides by User Type and Month, 2019",
+#        x = "Months",
+#        y = "Number of Rides") +
+#   geom_text(aes(label = round(count, 1)), vjust = -0.8)
+# 
+# print(p2a)
+# ggsave("p2a_ride_no_monthly.png", plot = p2a)
 
 # df_monthly_challange <- Trips_2019v2_challange %>%
 #   group_by(usertype, month) %>%
 #   summarise(count = n())
 
+
+# Average Number of Rides per Station by Membership, Monthly (2019)
+######################################################
+
 df_monthly_mean <- Trips_2019v2 %>%
-  group_by(usertype, month) %>%
+  group_by(membership, month) %>%
   summarise(mean_trips = n() / n_unique_from_station_id)
 
 # Plot the data as a line chart with points and labels
-p2b <- ggplot(df_monthly_mean, aes(x = month,
+p2 <- ggplot(df_monthly_mean, aes(x = month,
                                     y = mean_trips,
-                                    color = usertype,
-                                    group = usertype)) +
+                                    color = membership,
+                                    group = membership)) +
   geom_line() +
   geom_point() +
-  labs(title = "Average Number of Trips per Station by User Type and Month, 2019",
+  labs(title = "Fig 2. Average Number of Rides per Station by Membership, Monthly (2019)",
        x = "Months",
        y = "Number of Rides") +
   geom_text(aes(label = round(mean_trips, 0)), vjust = -0.8) +
@@ -277,48 +257,51 @@ p2b <- ggplot(df_monthly_mean, aes(x = month,
            label = paste("Total number of stations:",n_unique_from_station_id),
            hjust = 1.1, vjust = 2)
 
-print(p2b)
-ggsave("p2b_monthly_rides_per_station.png", plot = p2b)
+print(p2)
+ggsave("p2a_monthly_rides_per_station.png", plot = p2)
 
 
-# ride data by users and days, no of riders and avg. ride durarion
-df_daily_no <- Trips_2019v2 %>% # total no
-  group_by(usertype, days) %>%
-  summarise(count = n())
+# Number of Rides by Membership, Daily, 2019
+######################################################
+# df_daily_no <- Trips_2019v2 %>% # total no
+#   group_by(membership, days) %>%
+#   summarise(count = n())
+# 
+# # Plot the data as a bar chart
+# p3 <- ggplot(df_daily_no, aes(x = days,
+#                               y = count,
+#                               color = membership,
+#                               group = membership)) +
+#   geom_line() +
+#   geom_point() +
+#   # scale_y_continuous(labels = scales::label_number()) +
+#   labs(title = "Number of Rides by Membership, Daily, 2019",
+#        x = "Days",
+#        y = "Number of Rides") +
+#   geom_text(aes(label = round(count, 1)), vjust = -0.8)
+# 
+# print(p3)
+# ggsave("p3_ride_no_weekly.png", plot = p3)
 
 
-
-# Plot the data as a bar chart
-p3 <- ggplot(df_daily_no, aes(x = days,
-                              y = count,
-                              color = usertype,
-                              group = usertype)) +
-  geom_line() +
-  geom_point() +
-  # scale_y_continuous(labels = scales::label_number()) +
-  labs(title = "Number of Rides by User Type and Day, 2019",
-       x = "Days",
-       y = "Number of Rides") +
-  geom_text(aes(label = round(count, 1)), vjust = -0.8)
-
-print(p3)
-ggsave("p3_ride_no_weekly.png", plot = p3)
+# Average Number of Rides per Station by membership, Daily (2019)
+######################################################
 
 df_daily_no_mean <- Trips_2019v2 %>% # mean no per station
-  group_by(usertype, days) %>%
+  group_by(membership, days) %>%
   summarise(mean_daily = n() / n_unique_from_station_id)
 
-# Convert usertype and days to factor variables
-df_daily_no_mean$usertype <- as.factor(df_daily_no_mean$usertype)
+# Convert membership and days to factor variables
+df_daily_no_mean$membership <- as.factor(df_daily_no_mean$membership)
 df_daily_no_mean$days <- as.factor(df_daily_no_mean$days)
 
-p3a <- ggplot(df_daily_no_mean, aes(x = days,
+p3 <- ggplot(df_daily_no_mean, aes(x = days,
                                     y = mean_daily,
-                                    color = usertype,
-                                    group = usertype)) +
+                                    color = membership,
+                                    group = membership)) +
   geom_line() +
   geom_point() +
-  labs(title = "Average Number of Rides per Station by User Type and Day, 2019",
+  labs(title = "Fig 3. Average Number of Rides per Station by membership, Daily (2019)",
        x = "Days",
        y = "Number of Rides") +
   geom_text(aes(label = round(mean_daily, 0)), vjust = -0.8) +
@@ -326,424 +309,479 @@ p3a <- ggplot(df_daily_no_mean, aes(x = days,
            label = paste("Total number of stations:", n_unique_from_station_id),
            hjust = 1.1, vjust = 2)
 
-print(p3a)
-ggsave("p3_weekly_rides_per_station.png", plot = p3a)
-
-# create the plot for use pattern of Monday
-monday_data <- Trips_2019v2 %>%
-  filter(days == "Monday") %>%
-  mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>% 
-  summarise(number_of_rides = n(),
-            average_duration = mean(duration_min)) %>% 
-  arrange(usertype, hour)
-
-# Create the first plot
-p4a_mon <- monday_data %>%
-  ggplot(aes(x = hour, 
-             y = average_duration,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)', 
-       title = 'Average duration by user type and hour on Monday')
-  #geom_text(aes(label = round(average_duration, 1)), vjust = -0.1)
-
-# Create the second plot
-p4b_mon <- monday_data %>%
-  ggplot(aes(x = hour, 
-             y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Number of rides', 
-       title = 'Number of rides by user type and hour on Monday') 
-
-# Display the plots
-p4 <- grid.arrange(p4a_mon, p4b_mon, ncol=1)
-print(p4)
-ggsave("p4_monday_hour.png", p4)
-
-# create the plot for use pattern of Tuesday
-tuesday_data <- Trips_2019v2 %>%
-  filter(days == "Tuesday") %>%
-  mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>%
-  summarise(number_of_rides = n(),
-            average_duration = mean(duration_min)) %>%
-  arrange(usertype, hour)
-
-# Create the first plot
-p5a_tue <- tuesday_data %>%
-  ggplot(aes(x = hour,
-             y = average_duration,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)',
-       title = 'Average duration by user type and hour on Tuesday')
-
-# Create the second plot
-p5b_tue <- tuesday_data %>%
-  ggplot(aes(x = hour,
-             y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Number of rides',
-       title = 'Number of rides by user type and hour on Tuesday')
-
-# Display the plots
-p5 <- grid.arrange(p5a_tue, p5b_tue, ncol=1)
-print(p5)
-ggsave("p5_tuesday_hour.png", p5)
+print(p3)
+ggsave("p3_weekly_rides_per_station.png", plot = p3)
 
 
-# create the plot for use pattern of Wednesday
-wednesday_data <- Trips_2019v2 %>%
-  filter(days == "Wednesday") %>%
-  mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>%
-  summarise(number_of_rides = n(),
-            average_duration = mean(duration_min)) %>%
-  arrange(usertype, hour)
+# compare average use time by casual vs. member per day
+######################################################
 
-# Create the first plot
-p6a_wed <- wednesday_data %>%
-  ggplot(aes(x = hour,
-             y = average_duration,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)',
-       title = 'Average duration by user type and hour on Wednesday')
-
-# Create the second plot
-p6b_wed <- wednesday_data %>%
-  ggplot(aes(x = hour,
-             y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Number of rides',
-       title = 'Number of rides by user type and hour on Wednesday')
-
-# Display the plots
-p6 <- grid.arrange(p6a_wed, p6b_wed, ncol=1)
-print(p6)
-ggsave("p6_wednesday_hour.png", p6)
+# df_daily_mean_duration <- aggregate(Trips_2019v2$duration_min ~ Trips_2019v2$usertype +
+#                                       Trips_2019v2$days, FUN=mean)
+# colnames(df_daily_mean_duration) <- c("usertype", "days", "mean_duration")
+# 
+# # Create line chart
+# p1 <- ggplot(df_daily_mean_duration, aes(x = days,
+#                                          y = mean_duration,
+#                                          group = usertype,
+#                                          color = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   scale_x_discrete(limits = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) +
+#   labs(x = "Day of Week",
+#        y = "Average Duration (min)",
+#        title = "Average Trip Duration by Days and User Type") +
+#   geom_text(aes(label = round(mean_duration, 1)), vjust = -0.5)
+# 
+# # Display ans save plot
+# print(p1)
+# ggsave("p1_daily_duration.png", plot = p1)
 
 
-# create the plot for use pattern of Thursday
-thursday_data <- Trips_2019v2 %>%
-  filter(days == "Thursday") %>%
-  mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>%
-  summarise(number_of_rides = n(),
-            average_duration = mean(duration_min)) %>%
-  arrange(usertype, hour)
+# Average duration by user type and hour on Monday
+######################################################
 
-# Create the first plot
-p7a_thur <- thursday_data %>%
-  ggplot(aes(x = hour,
-             y = average_duration,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)',
-       title = 'Average duration by user type and hour on Thursday')
+# # create the plot for use pattern of Monday
+# monday_data <- Trips_2019v2 %>%
+#   filter(days == "Monday") %>%
+#   mutate(hour = hour(hms(start_time))) %>%
+#   group_by(usertype, hour) %>% 
+#   summarise(number_of_rides = n(),
+#             average_duration = mean(duration_min)) %>% 
+#   arrange(usertype, hour)
+# 
+# # Create the first plot
+# p4a_mon <- monday_data %>%
+#   ggplot(aes(x = hour, 
+#              y = average_duration,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Average duration (min)', 
+#        title = 'Average duration by user type and hour on Monday')
+#   #geom_text(aes(label = round(average_duration, 1)), vjust = -0.1)
+# 
+# # Create the second plot
+# p4b_mon <- monday_data %>%
+#   ggplot(aes(x = hour, 
+#              y = number_of_rides,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Number of rides', 
+#        title = 'Number of rides by user type and hour on Monday') 
+# 
+# # Display the plots
+# p4 <- grid.arrange(p4a_mon, p4b_mon, ncol=1)
+# print(p4)
+# ggsave("p4_monday_hour.png", p4)
+# 
 
-# Create the second plot
-p7b_thur <- thursday_data %>%
-  ggplot(aes(x = hour,
-             y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Number of rides',
-       title = 'Number of rides by user type and hour on Thursday')
+# # Average duration by user type and hour on Tuesday
+# ######################################################
+# 
+# # create the plot for use pattern of Tuesday
+# tuesday_data <- Trips_2019v2 %>%
+#   filter(days == "Tuesday") %>%
+#   mutate(hour = hour(hms(start_time))) %>%
+#   group_by(usertype, hour) %>%
+#   summarise(number_of_rides = n(),
+#             average_duration = mean(duration_min)) %>%
+#   arrange(usertype, hour)
+# 
+# # Create the first plot
+# p5a_tue <- tuesday_data %>%
+#   ggplot(aes(x = hour,
+#              y = average_duration,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Average duration (min)',
+#        title = 'Average duration by user type and hour on Tuesday')
+# 
+# # Create the second plot
+# p5b_tue <- tuesday_data %>%
+#   ggplot(aes(x = hour,
+#              y = number_of_rides,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Number of rides',
+#        title = 'Number of rides by user type and hour on Tuesday')
+# 
+# # Display the plots
+# p5 <- grid.arrange(p5a_tue, p5b_tue, ncol=1)
+# print(p5)
+# ggsave("p5_tuesday_hour.png", p5)
+# 
+# 
+# # Average duration by user type and hour on Wednesday
+# ######################################################
+# 
+# # create the plot for use pattern of Wednesday
+# wednesday_data <- Trips_2019v2 %>%
+#   filter(days == "Wednesday") %>%
+#   mutate(hour = hour(hms(start_time))) %>%
+#   group_by(usertype, hour) %>%
+#   summarise(number_of_rides = n(),
+#             average_duration = mean(duration_min)) %>%
+#   arrange(usertype, hour)
+# 
+# # Create the first plot
+# p6a_wed <- wednesday_data %>%
+#   ggplot(aes(x = hour,
+#              y = average_duration,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Average duration (min)',
+#        title = 'Average duration by user type and hour on Wednesday')
+# 
+# # Create the second plot
+# p6b_wed <- wednesday_data %>%
+#   ggplot(aes(x = hour,
+#              y = number_of_rides,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Number of rides',
+#        title = 'Number of rides by user type and hour on Wednesday')
+# 
+# # Display the plots
+# p6 <- grid.arrange(p6a_wed, p6b_wed, ncol=1)
+# print(p6)
+# ggsave("p6_wednesday_hour.png", p6)
+# 
+# 
+# # Average duration by user type and hour on Thursday
+# ######################################################
+# 
+# # create the plot for use pattern of Thursday
+# thursday_data <- Trips_2019v2 %>%
+#   filter(days == "Thursday") %>%
+#   mutate(hour = hour(hms(start_time))) %>%
+#   group_by(usertype, hour) %>%
+#   summarise(number_of_rides = n(),
+#             average_duration = mean(duration_min)) %>%
+#   arrange(usertype, hour)
+# 
+# # Create the first plot
+# p7a_thur <- thursday_data %>%
+#   ggplot(aes(x = hour,
+#              y = average_duration,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Average duration (min)',
+#        title = 'Average duration by user type and hour on Thursday')
+# 
+# # Create the second plot
+# p7b_thur <- thursday_data %>%
+#   ggplot(aes(x = hour,
+#              y = number_of_rides,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Number of rides',
+#        title = 'Number of rides by user type and hour on Thursday')
+# 
+# # Display the plots
+# p7 <- grid.arrange(p7a_thur, p7b_thur, ncol=1)
+# print(p7)
+# ggsave("p7_thursday_hour.png", p7)
+# 
+# 
+# # Average duration by user type and hour on Friday
+# ######################################################
+# 
+# # create the plot for use pattern of Friday
+# friday_data <- Trips_2019v2 %>%
+#   filter(days == "Friday") %>%
+#   mutate(hour = hour(hms(start_time))) %>%
+#   group_by(usertype, hour) %>%
+#   summarise(number_of_rides = n(),
+#             average_duration = mean(duration_min)) %>%
+#   arrange(usertype, hour)
+# 
+# # Create the first plot
+# p8a_fri <- friday_data %>%
+#   ggplot(aes(x = hour,
+#              y = average_duration,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Average duration (min)',
+#        title = 'Average duration by user type and hour on Friday')
+# 
+# # Create the second plot
+# p8b_fri <- friday_data %>%
+#   ggplot(aes(x = hour,
+#              y = number_of_rides,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Number of rides',
+#        title = 'Number of rides by user type and hour on Friday')
+# 
+# # Display the plots
+# p8 <- grid.arrange(p8a_fri, p8b_fri, ncol=1)
+# print(p8)
+# ggsave("p8_friday_hour.png", p8)
+# 
+# 
+# # Average duration by user type and hour on Saturday
+# ######################################################
+# 
+# # create the plot for use pattern of Saturday
+# saturday_data <- Trips_2019v2 %>%
+#   filter(days == "Saturday") %>%
+#   mutate(hour = hour(hms(start_time))) %>%
+#   group_by(usertype, hour) %>%
+#   summarise(number_of_rides = n(),
+#             average_duration = mean(duration_min)) %>%
+#   arrange(usertype, hour)
+# 
+# # Create the first plot
+# p9a_sat <- saturday_data %>%
+#   ggplot(aes(x = hour,
+#              y = average_duration,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Average duration (min)',
+#        title = 'Average duration by user type and hour on Saturday')
+# 
+# # Create the second plot
+# p9b_sat <- friday_data %>%
+#   ggplot(aes(x = hour,
+#              y = number_of_rides,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Number of rides',
+#        title = 'Number of rides by user type and hour on Saturday')
+# 
+# # Display the plots
+# p9 <- grid.arrange(p9a_sat, p9b_sat, ncol=1)
+# print(p9)
+# ggsave("p9_saturday_hour.png", p9)
 
-# Display the plots
-p7 <- grid.arrange(p7a_thur, p7b_thur, ncol=1)
-print(p7)
-ggsave("p7_thursday_hour.png", p7)
 
-
-# create the plot for use pattern of Friday
-friday_data <- Trips_2019v2 %>%
-  filter(days == "Friday") %>%
-  mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>%
-  summarise(number_of_rides = n(),
-            average_duration = mean(duration_min)) %>%
-  arrange(usertype, hour)
-
-# Create the first plot
-p8a_fri <- friday_data %>%
-  ggplot(aes(x = hour,
-             y = average_duration,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)',
-       title = 'Average duration by user type and hour on Friday')
-
-# Create the second plot
-p8b_fri <- friday_data %>%
-  ggplot(aes(x = hour,
-             y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Number of rides',
-       title = 'Number of rides by user type and hour on Friday')
-
-# Display the plots
-p8 <- grid.arrange(p8a_fri, p8b_fri, ncol=1)
-print(p8)
-ggsave("p8_friday_hour.png", p8)
-
-
-# create the plot for use pattern of Saturday
-saturday_data <- Trips_2019v2 %>%
-  filter(days == "Saturday") %>%
-  mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>%
-  summarise(number_of_rides = n(),
-            average_duration = mean(duration_min)) %>%
-  arrange(usertype, hour)
-
-# Create the first plot
-p9a_sat <- saturday_data %>%
-  ggplot(aes(x = hour,
-             y = average_duration,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)',
-       title = 'Average duration by user type and hour on Saturday')
-
-# Create the second plot
-p9b_sat <- friday_data %>%
-  ggplot(aes(x = hour,
-             y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Number of rides',
-       title = 'Number of rides by user type and hour on Saturday')
-
-# Display the plots
-p9 <- grid.arrange(p9a_sat, p9b_sat, ncol=1)
-print(p9)
-ggsave("p9_saturday_hour.png", p9)
-
+# Average duration by user type and hour on Sunday
+######################################################
 
 # create the plot for use pattern of Sunday
-sunday_data <- Trips_2019v2 %>%
-  filter(days == "Sunday") %>%
-  mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>%
-  summarise(number_of_rides = n(),
-            average_duration = mean(duration_min)) %>%
-  arrange(usertype, hour)
+# sunday_data <- Trips_2019v2 %>%
+#   filter(days == "Sunday") %>%
+#   mutate(hour = hour(hms(start_time))) %>%
+#   group_by(usertype, hour) %>%
+#   summarise(number_of_rides = n(),
+#             average_duration = mean(duration_min)) %>%
+#   arrange(usertype, hour)
+# 
+# # Create the first plot
+# p10a_sun <- sunday_data %>%
+#   ggplot(aes(x = hour,
+#              y = average_duration,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Average duration (min)',
+#        title = 'Average duration by user type and hour on Sunday')
+# 
+# # Create the second plot
+# p10b_sun <- sunday_data %>%
+#   ggplot(aes(x = hour,
+#              y = number_of_rides,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Number of rides',
+#        title = 'Number of rides by user type and hour on Sunday')
+# 
+# # Display the plots
+# p10 <- grid.arrange(p10a_sun, p10b_sun, ncol=1)
+# print(p10)
+# ggsave("p10_sunday_hour.png", p10)
 
-# Create the first plot
-p10a_sun <- sunday_data %>%
-  ggplot(aes(x = hour,
-             y = average_duration,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)',
-       title = 'Average duration by user type and hour on Sunday')
 
-# Create the second plot
-p10b_sun <- sunday_data %>%
-  ggplot(aes(x = hour,
-             y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Number of rides',
-       title = 'Number of rides by user type and hour on Sunday')
-
-# Display the plots
-p10 <- grid.arrange(p10a_sun, p10b_sun, ncol=1)
-print(p10)
-ggsave("p10_sunday_hour.png", p10)
-
-# TODO weekends hourly
+# Average duration by membership and on Weekdays, hourly (2019)
+######################################################
 
 # gather and plot for weekdays data
-weekday_data <- Trips_2019v2 %>%
-  filter(days %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")) %>%
-  mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>%
-  summarise(number_of_rides = n(),
-            average_duration = mean(duration_min)) %>%
-  arrange(usertype, hour)
+# weekday_data <- Trips_2019v2 %>%
+#   filter(days %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")) %>%
+#   mutate(hour = hour(hms(start_time))) %>%
+#   group_by(membership, hour) %>%
+#   summarise(number_of_rides = n(),
+#             average_duration = mean(duration_min)) %>%
+#   arrange(membership, hour)
+# 
+# # Create the first plot
+# p11a_weekday <- weekday_data %>%
+#   ggplot(aes(x = hour,
+#              y = average_duration,
+#              color = membership,
+#              group = membership)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Average duration (min)',
+#        title = 'Average Duration by Membership on Weekdays, Hourly (2019)')
+# 
+# # Create the second plot
+# p11b_weekday <- weekday_data %>%
+#   ggplot(aes(x = hour,
+#              y = number_of_rides,
+#              color = membership,
+#              group = membership)) +
+#   geom_line() +
+#   geom_point() +
+#   scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+#   labs(x = 'Hour', y = 'Number of rides',
+#        title = 'Number of Rides by Membership on Weekdays, Hourly (2019)')
+# 
+# # Display the plots
+# p11 <- grid.arrange(p11a_weekday, p11b_weekday, ncol=1)
+# print(p11)
+# ggsave("p11_weekday_hour.png", p11)
 
-# Create the first plot
-p11a_weekday <- weekday_data %>%
-  ggplot(aes(x = hour,
-             y = average_duration,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)',
-       title = 'Average duration by user type and hour on Weekdays')
+# Avg. duration & No of Rides / station by Membership on Weekdays, hourly
+######################################################
 
-# Create the second plot
-p11b_weekday <- weekday_data %>%
-  ggplot(aes(x = hour,
-             y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
-  labs(x = 'Hour', y = 'Number of rides',
-       title = 'Number of rides by user type and hour on Weekdays')
-
-# Display the plots
-p11 <- grid.arrange(p11a_weekday, p11b_weekday, ncol=1)
-print(p11)
-ggsave("p11_weekday_hour.png", p11)
-
-# TODO fix p11a to average per station
-# for average week data
 weekday_data_mean <- Trips_2019v2 %>%
   filter(days %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")) %>%
   mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>%
+  group_by(membership, hour) %>%
   summarise(number_of_rides = n() / n_unique_from_station_id,
             average_duration = mean(duration_min)) %>%
-  arrange(usertype, hour)
+  arrange(membership, hour)
 
 # Create the first plot
-p11a_weekday_mean <- weekday_data_mean %>%
+p4a_weekday_mean <- weekday_data_mean %>%
   ggplot(aes(x = hour,
              y = average_duration,
-             color = usertype,
-             group = usertype)) +
+             color = membership,
+             group = membership)) +
   geom_line() +
   geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)',
-       title = 'Average duration by user type and hour on Weekdays')
+  labs(x = 'Hour', 
+       y = 'Avg. duration (min)',
+       title = 'Average Duration by Membership on Weekdays, Hourly (2019)')
 
 # Create the second plot
-p11b_weekday_mean <- weekday_data_mean %>%
+p4b_weekday_mean <- weekday_data_mean %>%
   ggplot(aes(x = hour,
              y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
+             color = membership,
+             group = membership)) +
   geom_line() +
   geom_point() +
   scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
-  labs(x = 'Hour', y = 'Number of rides',
-       title = 'Number of rides by user type per station, hourly on Weekdays') +
+  labs(x = 'Hour', 
+       y = 'No. of rides',
+       title = 'Number of Rides per station by Membership on Weekdays, Hourly (2019)') +
   annotate("text", x = 0, y = Inf,
            label = paste("Total number of stations:", n_unique_from_station_id),
            hjust = 0, vjust = 0.9)
 
-p11_weekdays_mean <- grid.arrange(p11a_weekday_mean, p11b_weekday_mean, ncol=1)
-print(p11_weekdays_mean)
-ggsave("p11_weekdays_average_rides_per_station.png", plot = p11_weekdays_mean)
+p4_weekdays_mean <- grid.arrange(p4a_weekday_mean, p4b_weekday_mean, ncol=1)
+print(p4_weekdays_mean)
+ggsave("p4_weekdays.png", plot = p4_weekdays_mean)
 
+
+######################################################
 
 # TODO fix p12a to average per station
 # gather and plot for weekens data
-weekend_data <- Trips_2019v2 %>%
-  filter(days %in% c("Saturday", "Sunday")) %>%
-  mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>%
-  summarise(number_of_rides = n(),
-            average_duration = mean(duration_min)) %>%
-  arrange(usertype, hour)
-
-# Create the first plot
-p12a_weekend <- weekend_data %>%
-  ggplot(aes(x = hour,
-             y = average_duration,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)',
-       title = 'Average duration by user type and hour on Weekends')
-
-# Create the second plot
-p12b_weekend <- weekend_data %>%
-  ggplot(aes(x = hour,
-             y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
-  labs(x = 'Hour', y = 'Number of rides',
-       title = 'Number of rides by user type and hour on Weekends')
-
-# Display the plots
-p12 <- grid.arrange(p12a_weekend, p12b_weekend, ncol=1)
-print(p12)
-ggsave("p12_weekend_hour.png", p12)
-
-
-# for average weekend data
-weekend_data_mean <- Trips_2019v2 %>%
-  filter(days %in% c("Saturday", "Sunday")) %>%
-  mutate(hour = hour(hms(start_time))) %>%
-  group_by(usertype, hour) %>%
-  summarise(number_of_rides = n() / n_unique_from_station_id,
-            average_duration = mean(duration_min)) %>%
-  arrange(usertype, hour)
-
-# Create the first plot
-p12a_weekend_mean <- weekend_data_mean %>%
-  ggplot(aes(x = hour,
-             y = average_duration,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  labs(x = 'Hour', y = 'Average duration (min)',
-       title = 'Average duration by user type and hour on Weekends')
-
-# Create the second plot
-p12b_weekend_mean <- weekend_data_mean %>%
-  ggplot(aes(x = hour,
-             y = number_of_rides,
-             color = usertype,
-             group = usertype)) +
-  geom_line() +
-  geom_point() +
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
-  labs(x = 'Hour', y = 'Number of rides',
-       title = 'Number of rides by user type per station, hourly on Weekends') +
-  annotate("text", x = 0, y = Inf,
-           label = paste("Total number of stations:", n_unique_from_station_id),
-           hjust = 0, vjust = 0.9)
-
-p12_weekends_mean <- grid.arrange(p12a_weekend_mean, p12b_weekend_mean, ncol=1)
-print(p12_weekends_mean)
-ggsave("p12_weekends_average_rides_per_station.png", plot = p12_weekends_mean)
+# weekend_data <- Trips_2019v2 %>%
+#   filter(days %in% c("Saturday", "Sunday")) %>%
+#   mutate(hour = hour(hms(start_time))) %>%
+#   group_by(usertype, hour) %>%
+#   summarise(number_of_rides = n(),
+#             average_duration = mean(duration_min)) %>%
+#   arrange(usertype, hour)
+# 
+# # Create the first plot
+# p12a_weekend <- weekend_data %>%
+#   ggplot(aes(x = hour,
+#              y = average_duration,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Average duration (min)',
+#        title = 'Average duration by user type and hour on Weekends')
+# 
+# # Create the second plot
+# p12b_weekend <- weekend_data %>%
+#   ggplot(aes(x = hour,
+#              y = number_of_rides,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+#   labs(x = 'Hour', y = 'Number of rides',
+#        title = 'Number of rides by user type and hour on Weekends')
+# 
+# # Display the plots
+# p12 <- grid.arrange(p12a_weekend, p12b_weekend, ncol=1)
+# print(p12)
+# ggsave("p12_weekend_hour.png", p12)
+# 
+# 
+# # for average weekend data
+# weekend_data_mean <- Trips_2019v2 %>%
+#   filter(days %in% c("Saturday", "Sunday")) %>%
+#   mutate(hour = hour(hms(start_time))) %>%
+#   group_by(usertype, hour) %>%
+#   summarise(number_of_rides = n() / n_unique_from_station_id,
+#             average_duration = mean(duration_min)) %>%
+#   arrange(usertype, hour)
+# 
+# # Create the first plot
+# p12a_weekend_mean <- weekend_data_mean %>%
+#   ggplot(aes(x = hour,
+#              y = average_duration,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   labs(x = 'Hour', y = 'Average duration (min)',
+#        title = 'Average duration by user type and hour on Weekends')
+# 
+# # Create the second plot
+# p12b_weekend_mean <- weekend_data_mean %>%
+#   ggplot(aes(x = hour,
+#              y = number_of_rides,
+#              color = usertype,
+#              group = usertype)) +
+#   geom_line() +
+#   geom_point() +
+#   scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+#   labs(x = 'Hour', y = 'Number of rides',
+#        title = 'Number of rides by user type per station, hourly on Weekends') +
+#   annotate("text", x = 0, y = Inf,
+#            label = paste("Total number of stations:", n_unique_from_station_id),
+#            hjust = 0, vjust = 0.9)
+# 
+# p12_weekends_mean <- grid.arrange(p12a_weekend_mean, p12b_weekend_mean, ncol=1)
+# print(p12_weekends_mean)
+# ggsave("p12_weekends_average_rides_per_station.png", plot = p12_weekends_mean)
 
 
 
