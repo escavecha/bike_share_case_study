@@ -146,6 +146,7 @@ print(paste("total trips made in 2019:", n_unique_tripid)) # 3817991
 Trips_2019v2 <- Trips_2019v2 %>% mutate(usertype = recode(usertype,
                                           "Customer" = 'Casual',
                                           "Subscriber" = 'Member'))
+names(Trips_2019v2)[names(Trips_2019v2) == 'usertype'] <- "membership"
 
 # reorder to organize the order of days appear
 Trips_2019v2$days <- ordered(Trips_2019v2$days, levels=c("Monday",
@@ -172,6 +173,10 @@ result <- data.frame(Usertype = mean_duration[, 1],
 
 # Print the result
 print(result)
+
+
+
+
 
 
 
