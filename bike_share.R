@@ -10,7 +10,7 @@ library(gridExtra)
 library(reshape2)
 
 # NOTE: set the working directory accordingly
-setwd("case1")
+setwd("C:/Google_DA_CaseStudy")
 
 # import csv data files
 Trips_2019_Q1 <- read_csv("Divvy_Trips_2019_Q1.csv")
