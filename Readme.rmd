@@ -423,11 +423,11 @@ ggsave("p1_monthly_duration.png", plot = p1)
 ```
 Key findings:
 
-1. on average, `casual` users use the bike for around 29 to 41 minutes.
-2. on average, `members` use the bike around 11 to 14 minutes.
-3. average duration is the least in February for `casual` riders.
-4. average duration is the least in November and December for 'members'.
-5. Compared to 'casual` riders, the variance in the trend is smaller for `members`.
+1. on average, _Casual_ users use the bike for around 29 to 41 minutes.
+2. on average, _Members_ use the bike around 11 to 14 minutes.
+3. average duration is the least in February for _Casual_ riders.
+4. average duration is the least in November and December for _Members_.
+5. Compared to _Casual_ riders, the variance in the trend is smaller for _Members_.
 
 To see the patterns in different angle, plot the data for number of riders for monthly.
 This time I will use the average number of rides per station.
@@ -489,12 +489,13 @@ p3 <- ggplot(df_daily_mean_duration, aes(x = days,
 print(p3)
 ggsave("p1_daily_duration.png", plot = p3)
 ```
+Key findings: 
 
-Roughly speaking, *members* ride a bike daily, about 13 to 16 minutes in average. However, *casual* users ride about 50
-to 60 minutes in average.
+1. the longest duration is observed on Saturday for *Casual* and *Member*.
+2. *Casual* riders takes about 25 minutes more than *Members*.
+3. From Monday to Friday, average duration time is about the same for *Members*. 
 
-Although the difference is visible, still the purpose of the ride is still unclear. Let's analyze the daily patterns for
-number or rides.
+Consistency in the patterns may related to the commute purpose. To verify this hypothesis, continue to analyze the daily patterns for number or rides.
 
 ```{r fig 4}
 df_daily_no_mean <- Trips_2019v2 %>% # mean no per station
@@ -522,17 +523,14 @@ p4 <- ggplot(df_daily_no_mean, aes(x = days,
 print(p4)
 ggsave("p4_weekly_rides_per_station.png", plot = p4)
 ```
+Key findings: 
 
-Now the pattern is more understandable. *Members* use the ride for Monday to Friday, then drops on Saturday and Sunday.
-We can assume that those rides are mostly used for commute to work, which make senses when the average ride duration is
-less than 20 minutes. At the same time, rides are increased during weekends for *casual* riders, as we may assume that
-those are leisurely purpose. Still, *casual* riders are using the bike on the weekdays too.
+1. Average number of rides for *Members* are at highest level along the weekdays. On weekends, those numbers drop in half.
+2. On the contrary, the average number or rides are highest on Saturday for *Casual* riders.
 
-> Key finding: The purpose of rides are different for membership types. *Members* mainly use the ride during weekdays,
-> whiile *casual* riders mostly use for weekends.
+The pattern is in line with the hypothesis from Figure 3. We can assume that those rides are mostly used for commute for *Members*, while  rides are increased during weekends for *casual* riders use it for leisurely purpose on weekend. Still, *casual* riders are using the bike on the weekdays too.
 
-Let's take a look on the patterns on hourly basis on each day to verify this finding. I will plot the charts for
-weekdays and weekends to see the difference.
+Let's take a look on the patterns on hourly basis on each day to verify this finding. I will plot the charts for weekdays and weekends to see the difference.
 
 #### Step 4. Hourly patterns
 
@@ -577,3 +575,6 @@ p4_weekdays_mean <- grid.arrange(p4a_weekday_mean, p4b_weekday_mean, ncol=1)
 print(p4_weekdays_mean)
 ggsave("p4_weekdays.png", plot = p4_weekdays_mean)
 ```
+Key findings:
+
+
