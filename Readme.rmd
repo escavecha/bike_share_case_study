@@ -1,7 +1,7 @@
 ---
 title: "Case Study: How Does a Bike-Share Navigate Speedy Success?"
 author: John Lee
-date: < the current date DD/MM/YYYY >
+date: 08/22/2023
 output: html_vignette
 editor_options: 
   markdown: 
@@ -70,8 +70,8 @@ the result of analysis. R has used for this work.
 
 ### Data source
 
-By the time I have complete this case study, *Cyclistic*'s historical trip data from 2013 to July 2023 has provided for analysis:
-([link](https://divvy-tripdata.s3.amazonaws.com/index.html))
+By the time I have complete this case study, *Cyclistic*'s historical trip data from 2013 to July 2023 has provided for
+analysis: ([link](https://divvy-tripdata.s3.amazonaws.com/index.html))
 
 > Note: The datasets have a different name, as *Cyclistic* is a fictional company. The data has been made available for
 > case study by *Motivate International Inc.* under this license
@@ -84,7 +84,7 @@ First, data pre-processing work is following in below steps.
 
 1.  import libraries for use.
 2.  import data from downloaded files.
-3.  check variable names, attributes in datasets to merge them into a single dataframe.
+3.  check variable names, attributes in data sets to merge them into a single dataframe.
 4.  clean up data to prepare analysis.
 
 ### Data Pre-processing
@@ -92,12 +92,12 @@ First, data pre-processing work is following in below steps.
 #### Step 1. Install and import libraries
 
 ```{r pkg install}
-install.packages("tidyverse")
-install.packages("lubricate")
-install.packages("ggplot2")
-install.packages("readr")
-install.packages("dplyr")
-install.packages("gridExtra")
+# install.packages("tidyverse", repos = "https://cran.us.r-project.org")
+# install.packages("lubricate", repos = "https://cran.us.r-project.org")
+# install.packages("ggplot2", repos = "https://cran.us.r-project.org")
+# install.packages("readr", repos = "https://cran.us.r-project.org")
+# install.packages("dplyr", repos = "https://cran.us.r-project.org")
+# install.packages("gridExtra", repos = "https://cran.us.r-project.org")
 ```
 
 ```{r load library}
@@ -112,7 +112,7 @@ library(gridExtra)
 
 #### Step 2. import data from downloaded files
 
-I chose `Divvy_Trips_2019_Q1.zip` to `Divvy_Trips_2019_Q4.zip` files to use. 
+I chose `Divvy_Trips_2019_Q1.zip` to `Divvy_Trips_2019_Q4.zip` files to use.
 
 ```{r import data}
 Trips_2019_Q1 <- read_csv("Divvy_Trips_2019_Q1.csv", show_col_types = FALSE)
@@ -205,26 +205,34 @@ Check the dataframe `Trip_2019v1` using `summary()` function.
 ```{r}
 summary(Trips_2019v1)
 ```
-There are two things noticed from `duration_min`. 
-First, The Minimum value in duration_min is -56.37. Since this column has calculated based on the time difference between
-`end_time` and `start_time`, negative value seems strange. The packet explains that those values are from the bikes are taken out of services. So I will delete those rows from the data.
+
+There are two things noticed from `duration_min`. First, The Minimum value in duration_min is -56.37. Since this column
+has calculated based on the time difference between `end_time` and `start_time`, negative value seems strange. The
+packet explains that those values are from the bikes are taken out of services. So I will delete those rows from the
+data.
 
 ```{r remove false duration}
 Trips_2019v1 <- subset(Trips_2019v1, duration_min >= 0)
 ```
 
-Second, Compared to Mean and 3rd Quartile value, the Max value is far too extreme. Meaning that the bike has turned in 177200 minutes later (or 123 days) since `start_time`. How to handle those cases? 
+Second, Compared to Mean and 3rd Quarterly value, the Max value is far too extreme. Meaning that the bike has turned in
+177200 minutes later (or 123 days) since `start_time`. How to handle those cases?
 
-In the real-world, *Divvy* mentiones in FAQ as below:
-> (Quote) Do not under any circumstances leave your bike unattended; if you left your bike outside of a station please return immediately and redock your bike. Please know that bikes missing for longer than 24 hours can result in a $1,200 fee (plus tax) charged to the account holder that took out the bike ([link](https://help.divvybikes.com/hc/en-us/articles/360033123412-My-bike-was-lost-or-stolen)).
+In the real-world, *Divvy* mentions in FAQ as below: \> (Quote) Do not under any circumstances leave your bike
+unattended; if you left your bike outside of a station please return immediately and re-dock your bike. Please know that
+bikes missing for longer than 24 hours can result in a \$1,200 fee (plus tax) charged to the account holder that took
+out the bike ([link](https://help.divvybikes.com/hc/en-us/articles/360033123412-My-bike-was-lost-or-stolen)).
 
-Thus, I will assume that the data with `duration_min` is more than 24 hours (1440 min) is abnormal instances, and also exclude from the scope of analysis. Let's check how many rows fit in this criteria.
+Thus, I will assume that the data with `duration_min` is more than 24 hours (1440 min) is abnormal instances, and also
+exclude from the scope of analysis. Let's check how many rows fit in this criteria.
 
 ```{r}
 count <- sum(Trips_2019v1$duration_min > 1440)
 print(count)
 ```
-Luckily, those 'unusual' rides are takes negligible portion from the dataset. Delete those rows likewise.
+
+Luckily, those 'unusual' rides are takes negligible portion from the data set. Delete those rows likewise.
+
 ```{r}
 Trips_2019v1 <- subset(Trips_2019v1, duration_min <= 1440)
 ```
@@ -294,6 +302,7 @@ Trips_2019v2 <- Trips_2019v2[, c("trip_id",
 ```
 
 Let's check what kind of variables exist in `usertype`.
+
 ```{r}
 table(Trips_2019v2$usertype)
 ```
@@ -334,7 +343,8 @@ print(paste("Number of bike stations in 2019:", n_unique_from_station_id)) # 616
 print(paste("Total trips made in 2019:", n_unique_tripid)) # 3817991
 ```
 
-Compared to the description in scenario, the fleet size has expanded from 5824 to 6017, while number of stations has decreased from 692 to 616, since 2016.
+Compared to the description in scenario, the fleet size has expanded from 5824 to 6017, while number of stations has
+decreased from 692 to 616, since 2016.
 
 The pre-processing part is now complete. So far, following works have done:
 
@@ -391,9 +401,11 @@ print(result)
 
 Maximum and minimum values are identical for both membership types. However, the mean value suggests difference between
 users: *Casual* users ride longer than *Members* per ride, even though their portion of total usage is less than 25%. On
-the contrary, *members* ride for short distance, but more frequently. To identify the detail patterns in this difference, I will start to break those patters from monthly to hourly scale in following analysis.
+the contrary, *members* ride for short distance, but more frequently. To identify the detail patterns in this
+difference, I will start to break those patters from monthly to hourly scale in following analysis.
 
 #### Step 2. Monthly patterns
+
 Let's visualize the monthly patterns by membership.
 
 ```{r fig 1}
@@ -421,16 +433,17 @@ p1 <- ggplot(df_months,
 print(p1)
 ggsave("p1_monthly_duration.png", plot = p1)
 ```
+
 Key findings:
 
-1. on average, _Casual_ users use the bike for around 29 to 41 minutes.
-2. on average, _Members_ use the bike around 11 to 14 minutes.
-3. average duration is the least in February for _Casual_ riders.
-4. average duration is the least in November and December for _Members_.
-5. Compared to _Casual_ riders, the variance in the trend is smaller for _Members_.
+1.  on average, *Casual* users use the bike for around 29 to 41 minutes.
+2.  on average, *Members* use the bike around 11 to 14 minutes.
+3.  average duration is the least in February for *Casual* riders.
+4.  average duration is the least in November and December for *Members*.
+5.  Compared to *Casual* riders, the variance in the trend is smaller for *Members*.
 
-To see the patterns in different angle, plot the data for number of riders for monthly.
-This time I will use the average number of rides per station.
+To see the patterns in different angle, plot the data for number of riders for monthly. This time I will use the average
+number of rides per station.
 
 ```{r fig 2}
 df_monthly_mean <- Trips_2019v2 %>%
@@ -455,13 +468,15 @@ p2 <- ggplot(df_monthly_mean, aes(x = month,
 print(p2)
 ggsave("p2_monthly_rides_per_station.png", plot = p2)
 ```
-Key findings: 
 
-1. the least rides are made in February, while the most rides are made in August for both membership types.
-2. Ride usage are similar to the monthly weather condition. people rides less during winter, while rides more during summer. 
+Key findings:
 
-Recommendation:
-We can schedule the annual maintenance plan of the fleets focused on during winter time to allow more availability of the bikes for rest of the seasons. 
+1.  the least rides are made in February, while the most rides are made in August for both membership types.
+2.  Ride usage are similar to the monthly weather condition. people rides less during winter, while rides more during
+    summer.
+
+Recommendation: We can schedule the annual maintenance plan of the fleets focused on during winter time to allow more
+availability of the bikes for rest of the seasons.
 
 #### Step 3. Daily patterns
 
@@ -489,13 +504,15 @@ p3 <- ggplot(df_daily_mean_duration, aes(x = days,
 print(p3)
 ggsave("p1_daily_duration.png", plot = p3)
 ```
-Key findings: 
 
-1. the longest duration is observed on Saturday for *Casual* and *Member*.
-2. *Casual* riders takes about 25 minutes more than *Members*.
-3. From Monday to Friday, average duration time is about the same for *Members*. 
+Key findings:
 
-Consistency in the patterns may related to the commute purpose. To verify this hypothesis, continue to analyze the daily patterns for number or rides.
+1.  the longest duration is observed on Saturday for *Casual* and *Member*.
+2.  *Casual* riders takes about 25 minutes more than *Members*.
+3.  From Monday to Friday, average duration time is about the same for *Members*.
+
+Consistency in the patterns may related to the commute purpose. To verify this hypothesis, continue to analyze the daily
+patterns for number or rides.
 
 ```{r fig 4}
 df_daily_no_mean <- Trips_2019v2 %>% # mean no per station
@@ -523,14 +540,19 @@ p4 <- ggplot(df_daily_no_mean, aes(x = days,
 print(p4)
 ggsave("p4_weekly_rides_per_station.png", plot = p4)
 ```
-Key findings: 
 
-1. Average number of rides for *Members* are at highest level along the weekdays. On weekends, those numbers drop in half.
-2. On the contrary, the average number or rides are highest on Saturday for *Casual* riders.
+Key findings:
 
-The pattern is in line with the hypothesis from Figure 3. We can assume that those rides are mostly used for commute for *Members*, while  rides are increased during weekends for *casual* riders use it for leisurely purpose on weekend. Still, *casual* riders are using the bike on the weekdays too.
+1.  Average number of rides for *Members* are at highest level along the weekdays. On weekends, those numbers drop in
+    half.
+2.  On the contrary, the average number or rides are highest on Saturday for *Casual* riders.
 
-Let's take a look on the patterns on hourly basis on each day to verify this finding. I will plot the charts for weekdays and weekends to see the difference.
+The pattern is in line with the hypothesis from Figure 3. We can assume that those rides are mostly used for commute for
+*Members*, while rides are increased during weekends for *casual* riders use it for leisurely purpose on weekend. Still,
+*casual* riders are using the bike on the weekdays too.
+
+Let's take a look on the patterns on hourly basis on each day to verify this finding. I will plot the charts for
+weekdays and weekends to see the difference.
 
 #### Step 4. Hourly patterns
 
@@ -577,15 +599,18 @@ p5_weekdays_mean <- grid.arrange(p5a_weekday_mean, p5b_weekday_mean, ncol=1)
 print(p5_weekdays_mean)
 ggsave("p4_weekdays.png", plot = p5_weekdays_mean)
 ```
+
 Key findings:
 
-1. Average duration for *Members* are stable in the range of 10 to 15 minutes.
-2. Average duration for *Casual* riders are shortest in the morning time (at 6 to 7am) and peaks at 10am. Generally, *Casual* riders take a longer trip for their use.
-3. Most frequent rides are made on 8am and 5pm for *Members*.
-4. Most frequent ride is made on 5pm for *Casual* riders.
-5. There is the least rides for any membership during midnight to 4am.
+1.  Average duration for *Members* are stable in the range of 10 to 15 minutes.
+2.  Average duration for *Casual* riders are shortest in the morning time (at 6 to 7am) and peaks at 10am. Generally,
+    *Casual* riders take a longer trip for their use.
+3.  Most frequent rides are made on 8am and 5pm for *Members*.
+4.  Most frequent ride is made on 5pm for *Casual* riders.
+5.  There is the least rides for any membership during midnight to 4am.
 
-From the patterns, it is more clear that main purpose of rides for *Members* is for commute. Unlike *Casual* riders patterns, *Members* have consistent patterns. To confirm, visulizae the same data for weekends.
+From the patterns, it is more clear that main purpose of rides for *Members* is for commute. Unlike *Casual* riders
+patterns, *Members* have consistent patterns. To confirm, visualize the same data for weekends.
 
 ```{r fig 6}
 weekend_data_mean <- Trips_2019v2 %>%
@@ -607,7 +632,7 @@ p6a_weekend_mean <- weekend_data_mean %>%
   scale_x_continuous(breaks=seq(0, 24, 2)) +
   labs(x = 'Hour', 
        y = 'Avg. duration (min)',
-       title = 'Fig 6a. Average Duration by Membership on Weekends, Hourly (2019)')
+       title = 'Fig 6a. Average Duration by Membership on Weekend, Hourly (2019)')
 
 # Create the second plot
 p6b_weekend_mean <- weekend_data_mean %>%
@@ -621,7 +646,7 @@ p6b_weekend_mean <- weekend_data_mean %>%
   scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
   labs(x = 'Hour', 
        y = 'No. of rides',
-       title = 'Fig 5b. Number of Rides per Station by Membership on Weekend, Hourly (2019)') +
+       title = 'Fig 6b. Number of Rides per Station by Membership on Weekend, Hourly (2019)') +
   annotate("text", x = 0, y = Inf,
            label = paste("Total number of stations:", n_unique_from_station_id),
            hjust = 0, vjust = 0.9)
@@ -631,3 +656,30 @@ print(p6_weekend_mean)
 ggsave("p6_weekend.png", plot = p6_weekend_mean)
 ```
 
+Key findings:
+
+1.  Average duration is consistent at around 15 minutes for *Members*.
+2.  Unlike patterns from weekdays, average duration is flattened at around 40 minutes for *Casual* riders.
+3.  Most rides are made during afternoon time, for both *Members* and *Casual* riders.
+
+From Figure 5b and 6b, the least busiest hours are from midnight to 4am for everyday. Therefore if any maintenance or
+the relocation of the bikes should be made, this will be the most optimum window. If night shift is unavailable, then
+the 4 hours window from 10am to 2pm on weekdays will be alternative to schedule.
+
+### Analysis Summary
+
+1.  *Members* take about 77% of total rides in 2019
+2.  *Casual* riders tend to take a longer trip than *Members*.
+3.  Ride pattern is analogous to the monthly climate patterns for both *Members* and *Casual* riders.
+4.  Most *Members* used the bike for commute in weekdays; *Casual* riders ride most during weekend(Saturday).
+5.  Most busiest times are at 8am and 5pm on weekdays.
+
+### Recommendations
+
+1.  Considering the monthly ride patterns, schedule the annual maintenance plan of the fleets focused on during winter
+    time to allow more availability of the bikes for rest of the seasons.
+2.  Schedule daily services & maintenance on the fleets at midnight to 4am (daily), or 10am to 2pm (weekdays).
+
+### Next steps
+
+From Figure 5b, the most busiest times are around 8am and 5pm. To attract people to subscribe membership, adequate number of bikes should be prepared at the stations. As the number of bikes in the fleets is limited, We might think to relocated the bikes from the least busiest stations to most busiest stations to accommodate most usage. Further analysis will be focused on to identify the loads on the stations, and figure out how to provide flexibility of the fleets across the stations. 
