@@ -1,9 +1,3 @@
----
-editor_options: 
-  markdown: 
-    wrap: 120
----
-
 ## Background
 
 The content presented here results from the capstone project completed for the *Google Data Analytics Professional
@@ -472,14 +466,12 @@ p1_monthly_mean_duration <- ggplot(df_months,
   geom_text(aes(label = round(mean_duration, 1)), vjust = -0.5)
 
 print(p1_monthly_mean_duration)
+ggsave("p1_monthly_mean_duration.png", plot = p1_monthly_mean_duration, 
+       width = 7, height = 4.4 )
 ```
 
 ![fig1](https://github.com/escavecha/bike_share_case_study/blob/master/p1_monthly_mean_duration.png)
 
-```         
-ggsave("p1_monthly_mean_duration.png", plot = p1_monthly_mean_duration, 
-       width = 7, height = 4.4 )
-```
 
 **Key findings:**
 
@@ -510,14 +502,12 @@ p2_monthly_no_station <- ggplot(df_monthly_mean, aes(x = month, y = mean_trips,
            hjust = 1.1, vjust = 2)
 
 print(p2_monthly_no_station)
+ggsave("p2_monthly_no_station.png", plot = p2_monthly_no_station, 
+       width = 7.3, height = 4.6)
 ```
 
 ![fig2](https://github.com/escavecha/bike_share_case_study/blob/master/p2_monthly_no_station.png)
 
-```         
-ggsave("p2_monthly_no_station.png", plot = p2_monthly_no_station, 
-       width = 7.3, height = 4.6)
-```
 
 **Key findings:**
 
@@ -544,14 +534,12 @@ p3_daily_mean_duration <- ggplot(df_daily_mean_duration, aes(x = days,
   geom_text(aes(label = round(mean_duration, 1)), vjust = -0.5)
 
 print(p3_daily_mean_duration)
+ggsave("p3_daily_mean_duration.png", plot = p3_daily_mean_duration, 
+       width = 7.3, height = 4.6)
 ```
 
 ![fig3](https://github.com/escavecha/bike_share_case_study/blob/master/p3_daily_mean_duration.png)
 
-```         
-ggsave("p3_daily_mean_duration.png", plot = p3_daily_mean_duration, 
-       width = 7.3, height = 4.6)
-```
 
 **Key findings:**
 
@@ -584,13 +572,11 @@ p4_daily_no_mean <- ggplot(df_daily_no_mean, aes(x = days, y = mean_daily,
            hjust = 1.1, vjust = 2)
 
 print(p4_daily_no_mean)
+ggsave("p4_daily_no_mean.png", plot = p4_daily_no_mean, width = 7.3, height = 4.6)
 ```
 
 ![fig4](https://github.com/escavecha/bike_share_case_study/blob/master/p4_daily_no_mean.png)
 
-```         
-ggsave("p4_daily_no_mean.png", plot = p4_daily_no_mean, width = 7.3, height = 4.6)
-```
 
 **Key findings:**
 
@@ -639,9 +625,6 @@ p5b_weekday_mean <- weekday_data_mean %>%
 
 p5_weekdays_mean <- grid.arrange(p5a_weekday_mean, p5b_weekday_mean, ncol=1)
 ```
-
-![fig5](https://github.com/escavecha/bike_share_case_study/blob/master/p5_weekdays_mean.png)
-
 ```         
 print(p5_weekdays_mean)
 
@@ -652,6 +635,7 @@ print(p5_weekdays_mean)
 
 ggsave("p5_weekdays_mean.png", plot = p5_weekdays_mean, width = 7.3, height = 4.6)
 ```
+![fig5](https://github.com/escavecha/bike_share_case_study/blob/master/p5_weekdays_mean.png)
 
 **Key findings:**
 
@@ -698,9 +682,6 @@ p6b_weekend_mean <- weekend_data_mean %>%
 
 p6_weekend_mean <- grid.arrange(p6a_weekend_mean, p6b_weekend_mean, ncol=1)
 ```
-
-![fig6](https://github.com/escavecha/bike_share_case_study/blob/master/p6_weekend_mean.png)
-
 ```         
 print(p6_weekend_mean)
 
@@ -711,12 +692,13 @@ print(p6_weekend_mean)
 
 ggsave("p6_weekend_mean.png", plot = p6_weekend_mean, width = 7.3, height = 4.6)
 ```
+![fig6](https://github.com/escavecha/bike_share_case_study/blob/master/p6_weekend_mean.png)
 
 **Key findings:**
 
--   The average duration is consistent at around 15 minutes for *Members*.
--   Unlike weekday patterns, the average duration is 40 minutes for *Casual* riders.
--   Most rides are made in the afternoon for both *Members* and *Casual* riders.
+-   The average duration is consistent at around 15 minutes for *members*.
+-   Unlike weekday patterns, the average duration is 40 minutes for *casual* riders.
+-   Most rides are made in the afternoon for both *members* and *casual* riders.
 
 *Figures 5b* and *6b* show that the least busy hours are from midnight to 4 am daily. Therefore if any maintenance or
 the relocation of the bikes should be made, this will be the most optimum window. If the night shift is unavailable, the
